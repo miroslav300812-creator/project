@@ -1,9 +1,2811 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Miroslav</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Miroslav — Web Developer / Creative Developer</title>
+<meta name="description" content="Miroslav — Web Developer, Creative Developer and Digital Designer. Premium websites, digital experiences and custom web projects for brands, businesses and ambitious ideas.">
+<meta name="theme-color" content="#060608">
+<meta property="og:title" content="Miroslav — Web Developer / Creative Developer">
+<meta property="og:description" content="Premium websites and digital experiences that get remembered.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23060608'/%3E%3Cpath d='M16 46V18l16 16 16-16v28' fill='none' stroke='%23d6b4ff' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+/* =========================================================
+   TOKENS
+   ========================================================= */
+:root{
+  --bg:#060608;
+  --bg-2:#0a0a0e;
+  --graphite:#111116;
+  --graphite-2:#16161d;
+  --glass:rgba(255,255,255,.035);
+  --glass-2:rgba(255,255,255,.06);
+  --line:rgba(255,255,255,.08);
+  --line-2:rgba(255,255,255,.14);
+  --text:#f3f1ec;
+  --muted:#9d9ba6;
+  --dim:#64636d;
+  --a1:#8f7dff;
+  --a2:#d6b4ff;
+  --a3:#ffd2b0;
+  --ok:#7ee2b8;
+  --err:#ff8a8a;
+  --warn:#ffd08a;
+  --grad:linear-gradient(115deg,var(--a1) 0%,var(--a2) 48%,var(--a3) 100%);
+  --radius:24px;
+  --radius-sm:14px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --ease-io:cubic-bezier(.76,0,.24,1);
+  --pad:clamp(20px,5vw,72px);
+  --maxw:100rem;
+  --nav-h:84px;
+  --f-sans:"Inter Tight",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-serif:"Instrument Serif","Times New Roman",Georgia,serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (min-width:2200px){html{font-size:125%}}
+@media (min-width:3200px){html{font-size:150%}}
+
+/* =========================================================
+   BASE
+   ========================================================= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);-webkit-text-size-adjust:100%;overflow-x:clip;scroll-behavior:smooth}
+html.smooth-wheel{scroll-behavior:auto}
+body{font-family:var(--f-sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:1rem;overflow-x:clip;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;min-height:100vh}
+body.is-locked{overflow:hidden}
+img,svg,canvas{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+ul{list-style:none}
+::selection{background:var(--a1);color:#fff}
+:focus-visible{outline:2px solid var(--a2);outline-offset:3px;border-radius:6px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link{position:fixed;left:16px;top:-80px;z-index:10001;background:var(--text);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;transition:top .3s var(--ease)}
+.skip-link:focus{top:16px}
+.container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad)}
+.mono{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.06em;text-transform:uppercase}
+.serif{font-family:var(--f-serif);font-weight:400;font-style:italic;letter-spacing:-.01em}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* film grain */
+.grain{position:fixed;inset:-50%;z-index:9000;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 8s steps(8) infinite}
+@keyframes grain{0%,100%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}}
+
+/* =========================================================
+   LOADER
+   ========================================================= */
+.loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:flex-end;clip-path:inset(0 0 0 0);transition:clip-path 1.1s var(--ease-io)}
+.loader.is-done{clip-path:inset(0 0 100% 0)}
+.loader.is-gone{display:none}
+.js .loader{animation:loaderFailsafe .01s 7s forwards}
+@keyframes loaderFailsafe{to{visibility:hidden;opacity:0}}
+html:not(.js) .loader{display:none}
+.loader__inner{width:100%;padding:var(--pad);display:grid;gap:28px}
+.loader__name{font-size:clamp(3.2rem,15vw,15rem);font-weight:600;letter-spacing:-.06em;line-height:.85;display:flex;overflow:hidden}
+.loader__name span{display:inline-block;transform:translateY(105%);animation:loaderIn 1s var(--ease) forwards;animation-delay:calc(var(--i)*.055s + .1s)}
+@keyframes loaderIn{to{transform:none}}
+.loader__meta{display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--muted)}
+.loader__count{font-family:var(--f-mono);font-size:.85rem;color:var(--text);font-variant-numeric:tabular-nums}
+.loader__bar{height:1px;background:var(--line);position:relative;overflow:hidden}
+.loader__bar i{position:absolute;inset:0;background:var(--grad);transform-origin:left;transform:scaleX(var(--p,0))}
+
+/* =========================================================
+   CURSOR + PROGRESS
+   ========================================================= */
+.progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:9500;pointer-events:none}
+.progress i{display:block;height:100%;background:var(--grad);transform-origin:left;transform:scaleX(0);box-shadow:0 0 12px rgba(214,180,255,.6)}
+.cursor{position:fixed;top:0;left:0;z-index:9800;pointer-events:none;display:none}
+.has-cursor .cursor{display:block}
+.cursor__dot{position:fixed;top:0;left:0;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--text);will-change:transform;transition:opacity .3s,width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease)}
+.cursor__ring{position:fixed;top:0;left:0;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;border:1px solid rgba(255,255,255,.35);display:grid;place-items:center;will-change:transform;transition:width .45s var(--ease),height .45s var(--ease),margin .45s var(--ease),background .45s var(--ease),border-color .45s var(--ease),opacity .3s}
+.cursor__label{font:500 .62rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#0b0b0e;opacity:0;transform:scale(.6);transition:opacity .3s,transform .45s var(--ease)}
+.cursor.is-hover .cursor__ring{width:64px;height:64px;margin:-32px 0 0 -32px;border-color:rgba(214,180,255,.6);background:rgba(214,180,255,.06)}
+.cursor.is-label .cursor__ring{width:96px;height:96px;margin:-48px 0 0 -48px;background:var(--text);border-color:transparent}
+.cursor.is-label .cursor__label{opacity:1;transform:none}
+.cursor.is-label .cursor__dot{opacity:0}
+.cursor.is-text .cursor__ring{opacity:0}
+.cursor.is-text .cursor__dot{width:2px;height:22px;margin:-11px 0 0 -1px;border-radius:2px}
+.cursor.is-hidden{opacity:0}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+.btn{--h:58px;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:14px;height:var(--h);padding:0 10px 0 28px;border-radius:999px;font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;isolation:isolate;overflow:hidden;transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .4s,color .4s;will-change:transform;-webkit-tap-highlight-color:transparent}
+.btn__label{position:relative;display:inline-block;overflow:hidden;line-height:1.4;height:1.4em}
+.btn__label>span{display:inline-block;transition:transform .6s var(--ease)}
+.btn__label>span::after{content:attr(data-text);position:absolute;left:0;top:100%}
+.btn:hover .btn__label>span{transform:translateY(-100%)}
+.btn__icon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;flex:none;transition:transform .6s var(--ease),background .4s}
+.btn__icon svg{width:14px;height:14px}
+.btn:hover .btn__icon{transform:rotate(-45deg)}
+.btn--primary{background:var(--text);color:#0a0a0d;box-shadow:0 0 0 0 rgba(214,180,255,0)}
+.btn--primary::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--grad);transform:translateY(101%);border-radius:inherit;transition:transform .7s var(--ease)}
+.btn--primary:hover::before{transform:none}
+.btn--primary:hover{box-shadow:0 18px 50px -12px rgba(169,140,255,.55)}
+.btn--primary .btn__icon{background:#0a0a0d;color:var(--text)}
+.btn--ghost{color:var(--text);background:rgba(255,255,255,.04);border:1px solid var(--line-2);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.btn--ghost::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(255,255,255,.08);transform:scale(.4);opacity:0;border-radius:inherit;transition:transform .6s var(--ease),opacity .5s}
+.btn--ghost:hover::before{transform:none;opacity:1}
+.btn--ghost:hover{border-color:rgba(214,180,255,.45)}
+.btn--ghost .btn__icon{background:rgba(255,255,255,.08)}
+.btn--sm{--h:46px;padding:0 8px 0 20px;font-size:.7rem;gap:10px}
+.btn--sm .btn__icon{width:30px;height:30px}
+.btn--block{width:100%;justify-content:space-between}
+.btn[disabled]{opacity:.55;pointer-events:none}
+.btn .spinner{display:none;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .8s linear infinite}
+.btn.is-loading .spinner{display:block}
+.btn.is-loading .btn__icon svg{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.link-u{position:relative;display:inline-block}
+.link-u::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .6s var(--ease)}
+.link-u:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+.nav{position:fixed;top:0;left:0;right:0;z-index:960;padding:14px 0;transition:transform .7s var(--ease),padding .5s var(--ease)}
+.nav.is-hidden{transform:translateY(-120%)}
+.nav__bar{display:flex;align-items:center;justify-content:space-between;gap:24px;height:60px;padding:0 10px 0 22px;border-radius:999px;border:1px solid transparent;transition:background .5s var(--ease),border-color .5s,backdrop-filter .5s,box-shadow .5s}
+.nav.is-scrolled .nav__bar{background:rgba(12,12,16,.62);border-color:var(--line);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);box-shadow:0 20px 60px -30px rgba(0,0,0,.8)}
+.nav__logo{display:flex;align-items:center;gap:12px;font-weight:600;letter-spacing:-.02em;font-size:1.1rem}
+.nav__mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,#1b1b24,#0c0c10);border:1px solid var(--line-2);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.nav__mark svg{width:18px;height:18px}
+.nav__logo small{display:block;font:400 .62rem/1.2 var(--f-mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.nav__links{display:flex;align-items:center;gap:4px;padding:5px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.nav__links a{position:relative;padding:9px 16px;border-radius:999px;font-size:.84rem;color:var(--muted);transition:color .3s}
+.nav__links a:hover{color:var(--text)}
+.nav__links a.is-active{color:var(--text)}
+.nav__pill{position:absolute;top:5px;left:0;height:calc(100% - 10px);border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);transition:transform .6s var(--ease),width .6s var(--ease),opacity .3s;pointer-events:none;opacity:0}
+.nav__links{position:relative}
+.nav__right{display:flex;align-items:center;gap:10px}
+.burger{display:none;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--line-2);position:relative;z-index:960}
+.burger span{position:absolute;left:16px;right:16px;height:1.5px;background:var(--text);border-radius:2px;transition:transform .6s var(--ease),top .6s var(--ease)}
+.burger span:nth-child(1){top:21px}
+.burger span:nth-child(2){top:29px}
+.menu-open .burger span:nth-child(1){top:25px;transform:rotate(45deg)}
+.menu-open .burger span:nth-child(2){top:25px;transform:rotate(-45deg)}
+
+.mmenu{position:fixed;inset:0;z-index:950;background:rgba(6,6,8,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);clip-path:circle(0% at calc(100% - 46px) 44px);transition:clip-path .9s var(--ease-io);display:flex;flex-direction:column;padding:calc(var(--nav-h) + 30px) var(--pad) max(28px,env(safe-area-inset-bottom));overflow-y:auto;visibility:hidden}
+.menu-open .mmenu{clip-path:circle(150% at calc(100% - 46px) 44px);visibility:visible}
+.mmenu__glow{position:absolute;width:120vw;height:120vw;right:-60vw;top:-40vw;border-radius:50%;background:radial-gradient(circle,rgba(143,125,255,.22),transparent 60%);pointer-events:none}
+.mmenu__links{display:grid;gap:4px;margin-top:auto;margin-bottom:auto;position:relative}
+.mmenu__links a{display:flex;align-items:baseline;gap:16px;font-size:clamp(2.4rem,11vw,4.5rem);font-weight:500;letter-spacing:-.045em;line-height:1.08;overflow:hidden;padding:2px 0}
+.mmenu__links a span{display:inline-block;transform:translateY(110%);transition:transform .8s var(--ease)}
+.mmenu__links a small{font:400 .72rem/1 var(--f-mono);color:var(--dim);transform:translateY(200%);transition:transform .8s var(--ease)}
+.menu-open .mmenu__links a span,.menu-open .mmenu__links a small{transform:none;transition-delay:calc(.25s + var(--i)*.06s)}
+.mmenu__links a:active span{color:var(--a2)}
+.mmenu__foot{position:relative;display:grid;gap:16px;padding-top:28px;border-top:1px solid var(--line);opacity:0;transform:translateY(20px);transition:opacity .6s,transform .8s var(--ease)}
+.menu-open .mmenu__foot{opacity:1;transform:none;transition-delay:.6s}
+.mmenu__contacts{display:flex;gap:10px;flex-wrap:wrap}
+.mmenu__contacts a{flex:1 1 140px;padding:14px 16px;border-radius:16px;border:1px solid var(--line-2);background:var(--glass);font-size:.9rem;display:flex;justify-content:space-between;gap:8px}
+.mmenu__contacts a small{color:var(--muted);font-family:var(--f-mono);font-size:.7rem}
+
+/* =========================================================
+   SECTIONS / COMMON
+   ========================================================= */
+.section{position:relative;padding:clamp(96px,14vw,200px) 0}
+.eyebrow{display:inline-flex;align-items:center;gap:12px;font:500 .74rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow::before{content:"";width:28px;height:1px;background:linear-gradient(90deg,var(--a2),transparent)}
+.h-display{font-size:clamp(2.6rem,7.4vw,8.5rem);line-height:.94;letter-spacing:-.05em;font-weight:500}
+.h-display em{font-family:var(--f-serif);font-style:italic;font-weight:400;letter-spacing:-.02em}
+.section-head{display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px 48px;margin-bottom:clamp(48px,7vw,96px)}
+.section-head .eyebrow{grid-column:1/-1}
+.section-head p{max-width:34ch;color:var(--muted);font-size:1.05rem}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.04);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:.78rem;color:var(--muted)}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(126,226,184,.6);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(126,226,184,.5)}70%{box-shadow:0 0 0 10px rgba(126,226,184,0)}100%{box-shadow:0 0 0 0 rgba(126,226,184,0)}}
+.tag{display:inline-flex;align-items:center;padding:6px 11px;border-radius:999px;border:1px solid var(--line);font:500 .66rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.demo-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(255,208,138,.08);border:1px solid rgba(255,208,138,.25);color:var(--warn);font:500 .62rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase}
+
+/* spotlight + glass card */
+.glass{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:var(--radius);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.spot::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(520px circle at var(--mx,50%) var(--my,50%),rgba(214,180,255,.10),transparent 42%);opacity:0;transition:opacity .5s}
+.spot::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;padding:1px;background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(214,180,255,.7),transparent 45%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .5s}
+.spot:hover::before,.spot:hover::after{opacity:1}
+.tilt{transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .7s var(--ease);transform-style:preserve-3d}
+.tilt.is-tilting{transition:transform .15s linear}
+
+/* reveal system */
+.js [data-reveal]{opacity:0;transform:translate3d(0,44px,0);transition:opacity 1.1s var(--ease) var(--d,0s),transform 1.3s var(--ease) var(--d,0s)}
+.js [data-reveal].is-in{opacity:1;transform:none}
+.js [data-reveal="fade"]{transform:none}
+.js [data-reveal="scale"]{transform:scale(.94)}
+.js [data-reveal="scale"].is-in{transform:none}
+.js [data-reveal="clip"]{opacity:1;transform:none;clip-path:inset(100% 0 0 0 round var(--radius));transition:clip-path 1.5s var(--ease-io) var(--d,0s)}
+.js [data-reveal="clip"].is-in{clip-path:inset(0 0 0 0 round var(--radius))}
+.js [data-reveal="line"]{opacity:1;transform:scaleX(0);transform-origin:left;transition:transform 1.6s var(--ease-io) var(--d,0s)}
+.js [data-reveal="line"].is-in{transform:none}
+[data-split] .w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .02em .1em;margin:0 -.02em -.1em}
+.js [data-split] .w>span{display:inline-block;transform:translate3d(0,108%,0) rotate(3deg);transform-origin:left bottom;transition:transform 1.25s var(--ease) calc(var(--i,0)*.045s + var(--d,0s))}
+.js [data-split].is-in .w>span{transform:none}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:calc(var(--nav-h) + 48px) 0 clamp(36px,5vw,64px);overflow:hidden;isolation:isolate}
+.hero__canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+.hero__bg{position:absolute;inset:0;z-index:-3;pointer-events:none}
+.hero__blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+.hero__blob--1{width:52vw;height:52vw;max-width:1100px;max-height:1100px;left:-14vw;top:-22vw;background:radial-gradient(circle,rgba(143,125,255,.55),transparent 65%);animation:drift1 22s var(--ease) infinite alternate}
+.hero__blob--2{width:42vw;height:42vw;max-width:900px;max-height:900px;right:-12vw;top:10vh;background:radial-gradient(circle,rgba(255,196,160,.28),transparent 65%);animation:drift2 26s var(--ease) infinite alternate}
+.hero__blob--3{width:36vw;height:36vw;max-width:760px;max-height:760px;left:30vw;bottom:-18vw;background:radial-gradient(circle,rgba(120,190,255,.20),transparent 65%);animation:drift1 30s var(--ease) infinite alternate-reverse}
+@keyframes drift1{to{translate:6vw 5vh}}
+@keyframes drift2{to{translate:-5vw 8vh}}
+.hero__grid{position:absolute;left:-25%;right:-25%;bottom:-8%;height:62%;z-index:-2;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:72px 72px;transform:perspective(700px) rotateX(64deg);transform-origin:50% 100%;-webkit-mask-image:radial-gradient(ellipse 60% 70% at 50% 100%,#000 10%,transparent 70%);mask-image:radial-gradient(ellipse 60% 70% at 50% 100%,#000 10%,transparent 70%);animation:gridMove 9s linear infinite;pointer-events:none}
+@keyframes gridMove{to{background-position:0 72px,0 0}}
+.hero__spot{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(560px circle at var(--hx,50%) var(--hy,40%),rgba(214,180,255,.09),transparent 60%);transition:opacity .6s}
+.hero__vignette{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(6,6,8,.4) 0%,transparent 30%,transparent 70%,var(--bg) 100%)}
+.hero__top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,56px)}
+.hero__roles{color:var(--muted)}
+.hero__title{font-size:clamp(3.2rem,7.4vw,9rem);line-height:.9;letter-spacing:-.055em;font-weight:500;text-transform:uppercase}
+.hero__title .line{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.hero__title .line>span{display:block;transform:translate3d(0,110%,0) skewY(4deg);transform-origin:left;transition:transform 1.5s var(--ease)}
+.hero__title .line:nth-child(2)>span{transition-delay:.09s}
+.hero__title .line:nth-child(3)>span{transition-delay:.18s}
+.hero__title em{font-family:var(--f-serif);font-style:italic;font-weight:400;text-transform:none;letter-spacing:-.02em;padding-right:.08em}
+.hero__title .indent{padding-left:clamp(0px,8vw,12rem)}
+.is-ready .hero__title .line>span{transform:none}
+.hero__bottom{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) auto;gap:32px 56px;align-items:end;margin-top:clamp(40px,5vw,72px);padding-top:clamp(24px,3vw,36px);border-top:1px solid var(--line)}
+.hero__id strong{display:block;font-size:1.35rem;font-weight:600;letter-spacing:-.02em}
+.hero__id span{color:var(--muted);font-size:.9rem}
+.hero__copy{color:var(--muted);font-size:clamp(1rem,1.15vw,1.15rem);max-width:44ch;line-height:1.55}
+.hero__copy b{color:var(--text);font-weight:500}
+.hero__ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero-fade{opacity:0;transform:translateY(24px);transition:opacity 1.2s var(--ease),transform 1.4s var(--ease)}
+.is-ready .hero-fade{opacity:1;transform:none;transition-delay:calc(.55s + var(--d,0s))}
+html:not(.js) .hero-fade,html:not(.js) .hero__title .line>span{opacity:1;transform:none}
+.hero__scroll{position:absolute;right:var(--pad);top:50%;writing-mode:vertical-rl;display:flex;align-items:center;gap:14px;color:var(--dim);font:500 .66rem/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase}
+.hero__scroll i{width:1px;height:64px;background:var(--line-2);position:relative;overflow:hidden}
+.hero__scroll i::after{content:"";position:absolute;left:0;top:-40%;width:100%;height:40%;background:var(--a2);animation:scrollLine 2.2s var(--ease-io) infinite}
+@keyframes scrollLine{to{top:110%}}
+
+/* marquee */
+.marquee{position:relative;padding:28px 0;border-block:1px solid var(--line);overflow:hidden;background:linear-gradient(90deg,var(--bg),transparent 12%,transparent 88%,var(--bg))}
+.marquee__track{display:flex;width:max-content;animation:marquee 38s linear infinite}
+.marquee:hover .marquee__track{animation-play-state:paused}
+.marquee__group{display:flex;align-items:center;gap:40px;padding-right:40px}
+.marquee__item{font-size:clamp(1.6rem,3.4vw,3.2rem);font-weight:500;letter-spacing:-.04em;white-space:nowrap;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.28);transition:color .4s}
+.marquee__item:nth-child(4n+1){color:var(--text);-webkit-text-stroke:0}
+.marquee__item.is-serif{font-family:var(--f-serif);font-style:italic;font-weight:400;letter-spacing:-.01em}
+.marquee__star{width:22px;height:22px;color:var(--a2);flex:none}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* =========================================================
+   ABOUT
+   ========================================================= */
+.about__statement{font-size:clamp(1.7rem,3.7vw,4.2rem);line-height:1.12;letter-spacing:-.035em;font-weight:400;max-width:22ch;margin-top:32px}
+.about__statement .sw{transition:opacity .5s var(--ease),color .5s;opacity:.14}
+.about__statement .sw.on{opacity:1}
+.about__statement em{font-family:var(--f-serif);font-style:italic}
+html:not(.js) .about__statement .sw{opacity:1}
+.about__grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:clamp(40px,7vw,120px);margin-top:clamp(64px,9vw,140px);align-items:start}
+.about__side{position:sticky;top:calc(var(--nav-h) + 40px);display:grid;gap:28px}
+.about__side p{color:var(--muted);font-size:1.05rem;max-width:40ch}
+.about__portrait{position:relative;aspect-ratio:4/5;max-width:360px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);background:radial-gradient(120% 90% at 30% 10%,rgba(143,125,255,.35),transparent 55%),radial-gradient(90% 70% at 90% 100%,rgba(255,210,176,.22),transparent 60%),linear-gradient(160deg,#15151c,#0a0a0e)}
+.about__portrait-mono{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-serif);font-style:italic;font-size:clamp(7rem,14vw,12rem);line-height:1;color:rgba(255,255,255,.9);text-shadow:0 20px 80px rgba(143,125,255,.45)}
+.about__portrait-ring{position:absolute;inset:14%;border-radius:50%;border:1px dashed rgba(255,255,255,.14);animation:spin 40s linear infinite}
+.about__portrait-meta{position:absolute;left:14px;right:14px;bottom:14px;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:14px;background:rgba(10,10,14,.55);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:.8rem}
+.about__portrait-meta small{color:var(--muted);font-family:var(--f-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase}
+.caps{display:grid;border-top:1px solid var(--line)}
+.cap{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:20px;align-items:center;padding:26px 0;border-bottom:1px solid var(--line);overflow:hidden}
+.cap::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(214,180,255,.07),transparent 70%);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease)}
+.cap:hover::before{transform:none}
+.cap__n{font:500 .72rem/1 var(--f-mono);color:var(--dim);position:relative}
+.cap__t{position:relative;font-size:clamp(1.25rem,2vw,1.8rem);letter-spacing:-.03em;font-weight:500;transition:transform .7s var(--ease)}
+.cap:hover .cap__t{transform:translateX(12px)}
+.cap__d{position:relative;color:var(--muted);font-size:.9rem;text-align:right;max-width:28ch}
+.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:clamp(56px,7vw,100px)}
+.principle{padding:30px;overflow:hidden}
+.principle__k{font:500 .7rem/1 var(--f-mono);letter-spacing:.14em;color:var(--a2);text-transform:uppercase}
+.principle h3{font-size:1.5rem;letter-spacing:-.03em;font-weight:500;margin:18px 0 10px}
+.principle p{color:var(--muted);font-size:.95rem}
+
+/* =========================================================
+   SERVICES
+   ========================================================= */
+.services__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.svc{position:relative;display:flex;flex-direction:column;min-height:400px;padding:30px;text-align:left;width:100%;overflow:hidden;cursor:pointer;transition:transform .7s var(--ease),border-color .5s,background .6s}
+.svc:hover{border-color:rgba(214,180,255,.24);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.015))}
+.svc__top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+.svc__n{font:500 .78rem/1 var(--f-mono);color:var(--muted);letter-spacing:.1em}
+.svc__n b{color:var(--text);font-weight:500}
+.svc__icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:rgba(255,255,255,.04);border:1px solid var(--line-2);color:var(--a2);transition:transform .8s var(--ease),background .5s,color .5s}
+.svc__icon svg{width:24px;height:24px}
+.svc:hover .svc__icon{transform:rotate(-8deg) scale(1.08);background:var(--text);color:#0a0a0d}
+.svc__body{margin-top:auto;position:relative;z-index:1;transform:translateZ(30px)}
+.svc__title{font-size:clamp(1.6rem,2.3vw,2.2rem);letter-spacing:-.04em;line-height:1.02;font-weight:500;margin-bottom:14px}
+.svc__desc{color:var(--muted);font-size:.95rem;max-width:36ch}
+.svc__tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+.svc__more{display:flex;align-items:center;gap:10px;margin-top:24px;font:500 .72rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text);opacity:.6;transition:opacity .4s,gap .5s var(--ease)}
+.svc__more svg{width:14px;height:14px}
+.svc:hover .svc__more{opacity:1;gap:16px}
+.svc__big{position:absolute;right:-.06em;bottom:-.24em;font-size:15rem;line-height:1;font-weight:600;letter-spacing:-.08em;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.05);transition:transform 1.2s var(--ease),-webkit-text-stroke-color .6s;pointer-events:none;z-index:0}
+.svc:hover .svc__big{transform:translateY(-14px);-webkit-text-stroke-color:rgba(214,180,255,.16)}
+
+/* =========================================================
+   WORK
+   ========================================================= */
+.work{position:relative}
+.work__sticky{position:relative}
+.work__head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:clamp(40px,5vw,72px)}
+.work__head .h-display{font-size:clamp(2.6rem,7vw,8rem)}
+.work__meta{display:flex;align-items:center;gap:18px;color:var(--muted)}
+.work__counter{font-family:var(--f-mono);font-size:.8rem;color:var(--text);font-variant-numeric:tabular-nums}
+.work__bar{width:140px;height:1px;background:var(--line-2);position:relative;overflow:hidden}
+.work__bar i{position:absolute;inset:0;background:var(--grad);transform-origin:left;transform:scaleX(var(--wp,.2))}
+.work__track{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.proj{position:relative;display:flex;flex-direction:column;gap:18px}
+.proj__frame{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);aspect-ratio:16/11;background:var(--graphite);cursor:pointer;box-shadow:0 40px 80px -50px rgba(0,0,0,.9)}
+.proj__frame::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 -80px 80px -60px rgba(0,0,0,.6);pointer-events:none;z-index:6}
+.proj__frame .pv__body{transition:transform 1.4s var(--ease)}
+.proj:hover .proj__frame .pv__body{transform:scale(1.045)}
+.proj__badge{position:absolute;top:3px;right:8px;z-index:7;padding:5px 9px;font-size:.56rem}
+.proj__info{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 24px;align-items:start}
+.proj__cat{display:flex;gap:12px;align-items:center;color:var(--muted);font:500 .7rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;grid-column:1/-1}
+.proj__cat b{color:var(--text);font-weight:500}
+.proj__title{font-size:clamp(1.5rem,2.3vw,2.2rem);letter-spacing:-.04em;font-weight:500;line-height:1.05}
+.proj__desc{color:var(--muted);font-size:.93rem;max-width:48ch;grid-column:1}
+.proj__btn{grid-row:2/4;grid-column:2;align-self:center}
+.proj--next .proj__frame{display:grid;place-items:center;text-align:center;background:radial-gradient(80% 80% at 50% 0%,rgba(143,125,255,.25),transparent 60%),linear-gradient(180deg,#121218,#0a0a0e);cursor:default}
+.proj--next .proj__frame h3{font-size:clamp(2rem,3.4vw,3.4rem);letter-spacing:-.045em;font-weight:500;line-height:1}
+.proj--next .proj__frame h3 em{font-family:var(--f-serif);font-weight:400}
+.proj--next .proj__frame p{color:var(--muted);margin:14px auto 26px;max-width:30ch}
+.work__note{margin-top:28px;color:var(--dim);font-size:.82rem;display:flex;gap:10px;align-items:center}
+.work__note svg{width:16px;height:16px;flex:none;color:var(--warn)}
+/* pinned horizontal mode */
+.work.is-pinned .work__sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding-top:var(--nav-h)}
+.work.is-pinned .work__head{margin-bottom:clamp(24px,3.5vh,48px)}
+.work.is-pinned .work__head .h-display{font-size:clamp(2.4rem,min(5.6vw,9vh),7.5rem)}
+.work.is-pinned .work__track-container{max-width:none;padding-inline:0}
+.work.is-pinned .proj__desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.work.is-pinned .work__track{display:flex;gap:24px;width:max-content;padding-inline:var(--pad);will-change:transform}
+.work.is-pinned .proj{width:clamp(380px,min(36vw,72vh),860px);flex:none}
+.work.is-pinned .proj__frame{aspect-ratio:auto;height:clamp(210px,min(24vw,35vh),580px)}
+
+
+/* ---------- project preview mockups (container-query scaled) ---------- */
+.pv{position:absolute;inset:0;container-type:inline-size;overflow:hidden;isolation:isolate;font-family:var(--f-sans)}
+.pv__bar{position:absolute;left:0;right:0;top:0;height:28px;display:flex;align-items:center;gap:6px;padding:0 12px;background:rgba(0,0,0,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:5;border-bottom:1px solid rgba(255,255,255,.05)}
+.pv__bar i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.22)}
+.pv__bar span{margin-left:10px;font:500 9px/1 var(--f-mono);color:rgba(255,255,255,.6);padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.07)}
+.pv__body{position:absolute;inset:28px 0 0;transform-origin:50% 60%}
+/* fashion */
+.pv--fashion{background:linear-gradient(180deg,#1a1512,#0b0908);color:#eadfce}
+.pvf__nav{position:absolute;top:5cqw;left:6cqw;right:6cqw;display:flex;justify-content:space-between;font-size:1.6cqw;letter-spacing:.3em}
+.pvf__nav b{font-weight:600}
+.pvf__nav span{opacity:.55;letter-spacing:.18em}
+.pvf__arch{position:absolute;right:10cqw;bottom:0;width:34cqw;height:82%;border-radius:999px 999px 0 0;background:radial-gradient(ellipse at 50% 22%,rgba(233,200,160,.35),transparent 55%),linear-gradient(180deg,#3b2d23,#140f0c);overflow:hidden;box-shadow:0 0 0 1px rgba(234,223,206,.12)}
+.pvf__arch::before{content:"";position:absolute;left:50%;top:22%;width:9cqw;height:11cqw;transform:translateX(-50%);border-radius:50%;background:linear-gradient(180deg,#d9b894,#8a6a50)}
+.pvf__arch::after{content:"";position:absolute;left:50%;top:38%;width:24cqw;height:60%;transform:translateX(-50%);border-radius:45% 45% 0 0/30% 30% 0 0;background:linear-gradient(180deg,#0d0a08,#050403)}
+.pvf__title{position:absolute;left:5cqw;bottom:9cqw;font-family:var(--f-serif);font-style:italic;font-size:24cqw;line-height:.78;letter-spacing:-.03em;mix-blend-mode:difference;color:#f2e9dc}
+.pvf__caption{position:absolute;left:6cqw;bottom:5cqw;font-size:1.5cqw;letter-spacing:.24em;text-transform:uppercase;opacity:.7}
+.pvf__cta{position:absolute;right:4cqw;top:12cqw;writing-mode:vertical-rl;font-size:1.4cqw;letter-spacing:.3em;text-transform:uppercase;opacity:.6}
+/* ai */
+.pv--ai{background:radial-gradient(90% 90% at 50% 20%,#11153a,#05060d 65%);color:#e8ebff}
+.pva__orb{position:absolute;left:50%;top:10cqw;width:34cqw;height:34cqw;margin-left:-17cqw;border-radius:50%;background:conic-gradient(from 0deg,#7c6cff,#4de1ff,#c77dff,#ff9fd2,#7c6cff);filter:blur(2.4cqw);opacity:.85;animation:spin 14s linear infinite}
+.pva__orb::after{content:"";position:absolute;inset:18%;border-radius:50%;background:#070918;filter:blur(2cqw)}
+.pva__h{position:absolute;left:0;right:0;top:33cqw;text-align:center;font-size:7.4cqw;font-weight:600;letter-spacing:-.05em;line-height:1}
+.pva__h span{background:linear-gradient(90deg,#a99cff,#7fe7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pva__sub{position:absolute;left:0;right:0;top:43cqw;text-align:center;font-size:1.7cqw;opacity:.6}
+.pva__prompt{position:absolute;left:50%;top:49cqw;transform:translateX(-50%);width:56cqw;padding:2cqw 2.4cqw;border-radius:99px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);font-size:1.7cqw;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(6px)}
+.pva__prompt i{display:inline-block;width:.12em;height:1.1em;background:#a99cff;vertical-align:middle;margin-left:2px;animation:blink 1s steps(1) infinite}
+.pva__prompt b{width:4cqw;height:4cqw;border-radius:50%;background:linear-gradient(135deg,#7c6cff,#4de1ff)}
+.pva__nav{position:absolute;top:4cqw;left:5cqw;right:5cqw;display:flex;justify-content:space-between;font-size:1.6cqw;opacity:.8}
+.pva__nav b{letter-spacing:.06em}
+@keyframes blink{50%{opacity:0}}
+/* agency */
+.pv--agency{background:#efeae2;color:#111}
+.pv--agency .pv__bar{background:rgba(0,0,0,.06)}
+.pv--agency .pv__bar i{background:rgba(0,0,0,.2)}
+.pv--agency .pv__bar span{color:rgba(0,0,0,.55);background:rgba(0,0,0,.06)}
+.pvg__lines{position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(0,0,0,.07) 1px,transparent 1px);background-size:25% 100%}
+.pvg__t{position:absolute;left:4cqw;top:6cqw;font-size:17.5cqw;font-weight:700;letter-spacing:-.07em;line-height:.8}
+.pvg__t2{position:absolute;left:4cqw;top:21cqw;font-size:17.5cqw;font-weight:700;letter-spacing:-.07em;line-height:.8;color:transparent;-webkit-text-stroke:.25cqw #111}
+.pvg__circle{position:absolute;right:7cqw;top:26cqw;width:22cqw;height:22cqw;border-radius:50%;background:#ff5b2e;mix-blend-mode:multiply;transition:transform 1.4s var(--ease)}
+.pvg__sq{position:absolute;right:22cqw;top:36cqw;width:13cqw;height:13cqw;background:#2f4bff;transform:rotate(18deg);mix-blend-mode:multiply;transition:transform 1.4s var(--ease)}
+.proj:hover .pvg__circle{transform:translate(-3cqw,-2cqw)}
+.proj:hover .pvg__sq{transform:rotate(60deg) translate(2cqw,1cqw)}
+.pvg__foot{position:absolute;left:4cqw;right:4cqw;bottom:4cqw;display:flex;justify-content:space-between;font-size:1.5cqw;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+/* ecommerce */
+.pv--shop{background:#0e0d0c;color:#efe7da}
+.pvs__head{position:absolute;top:4cqw;left:5cqw;right:5cqw;display:flex;justify-content:space-between;align-items:center;font-size:1.6cqw;letter-spacing:.14em;text-transform:uppercase}
+.pvs__head b{font-size:2.6cqw;letter-spacing:.5em;font-weight:500}
+.pvs__hero{position:absolute;left:5cqw;top:11cqw;font-family:var(--f-serif);font-size:6.4cqw;line-height:.95;letter-spacing:-.02em}
+.pvs__hero em{color:#d8b27a}
+.pvs__grid{position:absolute;left:5cqw;right:5cqw;bottom:4cqw;display:grid;grid-template-columns:repeat(3,1fr);gap:2cqw}
+.pvs__item{background:linear-gradient(180deg,#1c1a17,#141210);border-radius:1.4cqw;height:27cqw;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.05);transition:transform 1s var(--ease)}
+.proj:hover .pvs__item:nth-child(2){transform:translateY(-2cqw)}
+.pvs__item::before{content:"";position:absolute;left:50%;top:3cqw;width:7cqw;height:15cqw;margin-left:-3.5cqw;border-radius:3cqw 3cqw 1.2cqw 1.2cqw;background:linear-gradient(90deg,#8a6a3e,#e9c98f 45%,#8a6a3e)}
+.pvs__item:nth-child(2)::before{background:linear-gradient(90deg,#3b3b3f,#b9b9c0 45%,#3b3b3f);border-radius:50%;width:12cqw;height:12cqw;margin-left:-6cqw;top:5cqw}
+.pvs__item:nth-child(3)::before{background:linear-gradient(90deg,#5a2d25,#d98c73 45%,#5a2d25);border-radius:1cqw;width:9cqw;height:13cqw;margin-left:-4.5cqw}
+.pvs__item span{position:absolute;left:1.6cqw;right:1.6cqw;bottom:1.6cqw;display:flex;justify-content:space-between;font-size:1.3cqw;opacity:.75}
+/* saas */
+.pv--saas{background:#080a10;color:#dfe5ff}
+.pvd__side{position:absolute;left:0;top:0;bottom:0;width:15cqw;border-right:1px solid rgba(255,255,255,.06);padding:4cqw 2.4cqw;display:grid;align-content:start;gap:2.2cqw}
+.pvd__side i{display:block;height:1.4cqw;border-radius:1cqw;background:rgba(255,255,255,.08)}
+.pvd__side i:first-child{background:linear-gradient(90deg,#7c6cff,#4de1ff);width:60%;height:2.4cqw;margin-bottom:1cqw}
+.pvd__side i:nth-child(3){background:rgba(124,108,255,.35)}
+.pvd__main{position:absolute;left:18cqw;right:3cqw;top:3.5cqw;bottom:3cqw;display:grid;grid-template-rows:auto auto 1fr;gap:2.4cqw}
+.pvd__title{display:flex;justify-content:space-between;align-items:center;font-size:2.4cqw;font-weight:600;letter-spacing:-.03em}
+.pvd__title span{font-size:1.3cqw;font-weight:400;opacity:.55;padding:.8cqw 1.6cqw;border:1px solid rgba(255,255,255,.12);border-radius:99px}
+.pvd__kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqw}
+.pvd__kpi{padding:2cqw;border-radius:1.4cqw;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+.pvd__kpi small{display:block;font-size:1.2cqw;opacity:.55}
+.pvd__kpi b{font-size:3.6cqw;font-weight:600;letter-spacing:-.04em}
+.pvd__kpi em{font-style:normal;font-size:1.2cqw;color:#7ee2b8;margin-left:.6cqw}
+.pvd__chart{position:relative;border-radius:1.4cqw;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-end;gap:1.2cqw;padding:2cqw}
+.pvd__chart i{flex:1;border-radius:.6cqw .6cqw 0 0;background:linear-gradient(180deg,#8f7dff,rgba(143,125,255,.15));height:var(--h);transform-origin:bottom;transition:transform 1.2s var(--ease)}
+.pvd__chart i:nth-child(odd){background:linear-gradient(180deg,#4de1ff,rgba(77,225,255,.1))}
+.proj:hover .pvd__chart i{transform:scaleY(1.12)}
+.pvd__chart svg{position:absolute;inset:2cqw;width:calc(100% - 4cqw);height:calc(100% - 4cqw);overflow:visible}
+
+/* =========================================================
+   PRICING
+   ========================================================= */
+.pricing__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:stretch}
+.price{position:relative;display:flex;flex-direction:column;padding:28px 26px 26px;cursor:pointer;transition:transform .7s var(--ease),border-color .5s,background .6s,box-shadow .6s}
+.price:hover{border-color:var(--line-2)}
+.price.is-selected{border-color:rgba(214,180,255,.55);background:linear-gradient(180deg,rgba(143,125,255,.14),rgba(255,255,255,.02) 55%);box-shadow:0 30px 90px -40px rgba(143,125,255,.55),inset 0 1px 0 rgba(255,255,255,.1)}
+.price__head{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:30px}
+.price__name{font:500 .8rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase}
+.price__badge{padding:6px 10px;border-radius:999px;background:var(--grad);color:#0b0b0e;font:600 .6rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+.price__check{width:26px;height:26px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:background .4s,border-color .4s,transform .6s var(--ease)}
+.price__check svg{width:13px;height:13px;opacity:0;transform:scale(.4);transition:opacity .3s,transform .5s var(--ease);color:#0b0b0e}
+.price.is-selected .price__check{background:var(--text);border-color:var(--text)}
+.price.is-selected .price__check svg{opacity:1;transform:none}
+.price__amount{display:flex;align-items:baseline;gap:8px;margin:30px 0 6px;flex-wrap:wrap}
+.price__amount small{color:var(--muted);font-size:.85rem}
+.price__amount strong{font-size:clamp(2.3rem,3.2vw,3.2rem);font-weight:500;letter-spacing:-.05em;line-height:1}
+.price__amount span{color:var(--muted);font:500 .75rem/1 var(--f-mono);letter-spacing:.1em}
+.price__amount.is-custom strong{font-family:var(--f-serif);font-style:italic;font-weight:400;letter-spacing:-.02em}
+.price__desc{color:var(--muted);font-size:.9rem;min-height:3.2em}
+.price__feats{display:grid;gap:0;margin:24px 0;padding-top:14px;border-top:1px solid var(--line)}
+.price__feats li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;align-items:start;padding:8px 0;font-size:.86rem}
+.price__feats li svg{width:14px;height:14px;margin-top:4px;color:var(--a2)}
+.price__feats li.off{color:var(--dim)}
+.price__feats li.off svg{color:var(--dim)}
+.price__feats li span b{font-weight:500}
+.price__feats li span small{display:block;color:var(--muted);font-size:.78rem;line-height:1.35}
+.price__foot{margin-top:auto;display:grid;gap:14px}
+.price__time{display:flex;justify-content:space-between;color:var(--muted);font:500 .68rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+.price__time b{color:var(--text);font-weight:500}
+.estimate{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:0;margin-top:16px;overflow:hidden}
+.estimate__addons{padding:32px;border-right:1px solid var(--line)}
+.estimate__addons h3,.estimate__sum h3{font-size:1.35rem;font-weight:500;letter-spacing:-.03em}
+.estimate__addons>p{color:var(--muted);font-size:.9rem;margin:6px 0 22px}
+.addons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.addon{position:relative;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.02);cursor:pointer;transition:border-color .4s,background .4s,transform .5s var(--ease);-webkit-tap-highlight-color:transparent}
+.addon:hover{border-color:var(--line-2)}
+.addon input{position:absolute;opacity:0;pointer-events:none}
+.addon__box{width:20px;height:20px;border-radius:6px;border:1px solid var(--line-2);display:grid;place-items:center;flex:none;transition:background .3s,border-color .3s}
+.addon__box svg{width:12px;height:12px;color:#0b0b0e;opacity:0;transform:scale(.5);transition:opacity .25s,transform .4s var(--ease)}
+.addon__l{display:flex;align-items:center;gap:12px;font-size:.92rem;min-width:0}
+.addon__p{font:500 .74rem/1 var(--f-mono);color:var(--muted);white-space:nowrap}
+.addon:has(input:checked){border-color:rgba(214,180,255,.45);background:rgba(143,125,255,.08)}
+.addon input:checked+.addon__l .addon__box{background:var(--a2);border-color:var(--a2)}
+.addon input:checked+.addon__l .addon__box svg{opacity:1;transform:none}
+.addon input:focus-visible+.addon__l .addon__box{outline:2px solid var(--a2);outline-offset:3px}
+.estimate__sum{padding:32px;display:flex;flex-direction:column;gap:18px;background:radial-gradient(100% 100% at 100% 0%,rgba(143,125,255,.12),transparent 60%)}
+.sum-rows{display:grid;gap:10px;font-size:.92rem}
+.sum-row{display:flex;justify-content:space-between;gap:16px;color:var(--muted)}
+.sum-row b{color:var(--text);font-weight:500;text-align:right}
+.sum-total{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding-top:18px;border-top:1px solid var(--line)}
+.sum-total span{color:var(--muted);font-size:.85rem}
+.sum-total strong{font-size:clamp(1.9rem,3vw,2.6rem);font-weight:500;letter-spacing:-.045em;line-height:1;text-align:right}
+.sum-total strong small{font:500 .72rem/1 var(--f-mono);color:var(--muted);letter-spacing:.1em;margin-left:6px}
+.sum-note{color:var(--dim);font-size:.78rem}
+
+/* =========================================================
+   ORDER
+   ========================================================= */
+.order__wrap{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:20px;align-items:start}
+.order__panel{position:relative;padding:clamp(24px,3.4vw,44px);min-height:560px}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}
+.field{position:relative;display:grid;gap:8px}
+.field--full{grid-column:1/-1}
+.field label{font:500 .7rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.field label i{font-style:normal;color:var(--a2)}
+.input{width:100%;height:56px;padding:0 18px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line-2);color:var(--text);font-size:1rem;transition:border-color .3s,background .3s,box-shadow .3s;-webkit-appearance:none;appearance:none}
+.input::placeholder{color:var(--dim)}
+.input:hover{border-color:rgba(255,255,255,.22)}
+.input:focus{outline:none;border-color:rgba(214,180,255,.6);background:rgba(143,125,255,.06);box-shadow:0 0 0 4px rgba(143,125,255,.12)}
+textarea.input{height:auto;min-height:150px;padding:16px 18px;resize:vertical;line-height:1.55}
+select.input{padding-right:46px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23b9b7c2' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 18px center;cursor:pointer}
+select.input option{background:#111116;color:var(--text)}
+.field.is-invalid .input{border-color:rgba(255,138,138,.7);background:rgba(255,138,138,.05)}
+.field.is-valid .input{border-color:rgba(126,226,184,.35)}
+.field__err{min-height:0;font-size:.8rem;color:var(--err);display:none}
+.field.is-invalid .field__err{display:block;animation:errIn .4s var(--ease)}
+@keyframes errIn{from{opacity:0;transform:translateY(-4px)}}
+.field__hint{display:flex;justify-content:space-between;font-size:.76rem;color:var(--dim)}
+.field.is-shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.pay-toggle{grid-column:1/-1;display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.02);cursor:pointer}
+.pay-toggle input{position:absolute;opacity:0;pointer-events:none}
+.switch{position:relative;width:40px;height:24px;border-radius:99px;background:rgba(255,255,255,.1);flex:none;transition:background .3s;margin-top:1px}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--text);transition:transform .45s var(--ease)}
+.pay-toggle input:checked+.switch{background:var(--a1)}
+.pay-toggle input:checked+.switch::after{transform:translateX(16px)}
+.pay-toggle input:focus-visible+.switch{outline:2px solid var(--a2);outline-offset:3px}
+.pay-toggle b{display:block;font-weight:500;font-size:.95rem}
+.pay-toggle small{color:var(--muted);font-size:.82rem}
+.pay-toggle.is-disabled{opacity:.5;cursor:not-allowed}
+.form__submit{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px}
+.form__legal{color:var(--dim);font-size:.78rem;max-width:40ch}
+.form-state{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:18px;padding:clamp(24px,4vw,56px);border-radius:inherit;background:linear-gradient(180deg,rgba(14,14,19,.97),rgba(10,10,14,.98));opacity:0;visibility:hidden;transform:scale(.98);transition:opacity .5s var(--ease),transform .7s var(--ease),visibility .5s}
+.form-state.is-visible{opacity:1;visibility:visible;transform:none}
+.form-state__icon{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line-2);background:rgba(255,255,255,.04)}
+.form-state__icon svg{width:28px;height:28px}
+.form-state[data-type="success"] .form-state__icon{color:var(--ok);border-color:rgba(126,226,184,.4);background:rgba(126,226,184,.08);box-shadow:0 0 60px -10px rgba(126,226,184,.5)}
+.form-state[data-type="error"] .form-state__icon{color:var(--err);border-color:rgba(255,138,138,.4);background:rgba(255,138,138,.08)}
+.form-state[data-type="pending"] .form-state__icon,.form-state[data-type="redirect"] .form-state__icon,.form-state[data-type="loading"] .form-state__icon{color:var(--a2);border-color:rgba(214,180,255,.4)}
+.form-state[data-type="loading"] .form-state__icon svg,.form-state[data-type="redirect"] .form-state__icon svg{animation:spin 1.1s linear infinite}
+.form-state h3{font-size:clamp(1.8rem,3vw,2.8rem);letter-spacing:-.045em;font-weight:500;line-height:1.02;max-width:18ch}
+.form-state p{color:var(--muted);max-width:52ch}
+.form-state__meta{display:flex;flex-wrap:wrap;gap:8px}
+.form-state__actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.order__aside{display:grid;gap:14px;position:sticky;top:calc(var(--nav-h) + 20px)}
+.aside-card{padding:26px}
+.aside-card h3{font-size:1.1rem;font-weight:500;letter-spacing:-.02em;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.aside-card h3 small{font:500 .64rem/1 var(--f-mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.flow{display:grid;gap:0;counter-reset:flow}
+.flow li{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);gap:14px;padding:10px 0;align-items:center;color:var(--dim);transition:color .4s}
+.flow li:not(:last-child)::after{content:"";position:absolute;left:14.5px;top:38px;height:calc(100% - 28px);width:1px;background:var(--line);transition:background .5s}
+.flow__dot{width:30px;height:30px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;font:500 .66rem/1 var(--f-mono);background:var(--bg-2);position:relative;z-index:1;transition:all .5s var(--ease)}
+.flow__t b{display:block;font-weight:500;font-size:.9rem;letter-spacing:.02em}
+.flow__t small{font-size:.76rem}
+.flow li.is-done{color:var(--text)}
+.flow li.is-done .flow__dot{background:var(--text);border-color:var(--text);color:#0b0b0e}
+.flow li.is-done::after{background:linear-gradient(180deg,var(--text),var(--line))}
+.flow li.is-active{color:var(--text)}
+.flow li.is-active .flow__dot{border-color:var(--a2);color:var(--a2);box-shadow:0 0 0 5px rgba(214,180,255,.12),0 0 24px rgba(214,180,255,.4)}
+.flow li.is-error{color:var(--err)}
+.flow li.is-error .flow__dot{border-color:var(--err);color:var(--err);background:rgba(255,138,138,.08)}
+.flow li.is-skip{opacity:.45}
+.secure{display:flex;gap:12px;align-items:flex-start;color:var(--muted);font-size:.82rem}
+.secure svg{width:18px;height:18px;flex:none;color:var(--ok);margin-top:2px}
+
+/* =========================================================
+   CONTACT / CTA / FOOTER
+   ========================================================= */
+.contact__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.cbtn{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:48px;min-height:280px;padding:clamp(26px,3vw,40px);overflow:hidden;isolation:isolate;transition:border-color .5s,transform .7s var(--ease)}
+.cbtn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--grad);opacity:0;transform:scale(1.2);transition:opacity .7s var(--ease),transform 1s var(--ease)}
+.cbtn:hover::before{opacity:.12;transform:none}
+.cbtn:hover{border-color:rgba(214,180,255,.4)}
+.cbtn__top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.cbtn__icon{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.05);border:1px solid var(--line-2);transition:transform .8s var(--ease),background .5s,color .5s}
+.cbtn__icon svg{width:26px;height:26px}
+.cbtn:hover .cbtn__icon{background:var(--text);color:#0b0b0e;transform:rotate(-8deg)}
+.cbtn__arrow{width:54px;height:54px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:transform .7s var(--ease),background .5s,color .5s}
+.cbtn__arrow svg{width:18px;height:18px}
+.cbtn:hover .cbtn__arrow{transform:rotate(-45deg);background:var(--text);color:#0b0b0e}
+.cbtn__label{font:500 .74rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:block}
+.cbtn__title{font-size:clamp(1.9rem,3.6vw,3.6rem);letter-spacing:-.05em;font-weight:500;line-height:.98;word-break:break-word}
+.cbtn__handle{margin-top:14px;color:var(--muted);font-size:1rem;overflow-wrap:anywhere}
+.contact__extra{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;color:var(--muted);font-size:.9rem}
+.copy-btn{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;border:1px solid var(--line-2);font:500 .7rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;transition:border-color .3s,background .3s}
+.copy-btn:hover{border-color:rgba(214,180,255,.45);background:rgba(255,255,255,.04)}
+.copy-btn svg{width:14px;height:14px}
+
+.cta{position:relative;padding:clamp(120px,18vw,260px) 0;text-align:center;overflow:hidden;isolation:isolate}
+.cta__orb{position:absolute;left:50%;top:50%;width:min(1100px,120vw);aspect-ratio:1;translate:-50% -50%;z-index:-1;border-radius:50%;background:conic-gradient(from 0deg,rgba(143,125,255,.0),rgba(143,125,255,.35),rgba(214,180,255,.15),rgba(255,210,176,.3),rgba(143,125,255,0));filter:blur(100px);opacity:.7;animation:spin 30s linear infinite}
+.cta__rings{position:absolute;left:50%;top:50%;width:0;height:0;z-index:-1;pointer-events:none}
+.cta__rings i{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(255,255,255,.06);translate:-50% -50%}
+.cta__title{font-size:clamp(3rem,9.2vw,11rem);line-height:.88;letter-spacing:-.06em;font-weight:500;text-transform:uppercase;max-width:12ch;margin:28px auto 0}
+.cta__title em{font-family:var(--f-serif);text-transform:none;font-weight:400;letter-spacing:-.02em}
+.cta p{color:var(--muted);max-width:44ch;margin:30px auto 40px;font-size:1.1rem}
+.cta .btn{--h:68px;padding-left:34px;font-size:.84rem}
+.cta .btn .btn__icon{width:48px;height:48px}
+
+.footer{position:relative;padding:80px 0 max(28px,env(safe-area-inset-bottom));border-top:1px solid var(--line);overflow:hidden}
+.footer__grid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,.6fr));gap:40px}
+.footer__brand strong{display:block;font-size:1.6rem;letter-spacing:-.03em;font-weight:600}
+.footer__brand span{color:var(--muted)}
+.footer__brand p{color:var(--dim);max-width:36ch;margin-top:18px;font-size:.9rem}
+.footer h4{font:500 .7rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:18px}
+.footer ul{display:grid;gap:10px}
+.footer ul a{color:var(--muted);transition:color .3s}
+.footer ul a:hover{color:var(--text)}
+.footer__word{margin-top:80px;font-size:clamp(4rem,19.5vw,26rem);line-height:.76;letter-spacing:-.075em;font-weight:600;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;user-select:none;pointer-events:none;white-space:nowrap}
+.footer__bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;padding-top:24px;border-top:1px solid var(--line);color:var(--dim);font-size:.82rem}
+.to-top{display:inline-flex;align-items:center;gap:8px;color:var(--muted)}
+.to-top svg{width:14px;height:14px;transition:transform .5s var(--ease)}
+.to-top:hover svg{transform:translateY(-3px)}
+
+/* =========================================================
+   MODAL + TOAST + MOBILE CTA
+   ========================================================= */
+.modal{position:fixed;inset:0;z-index:9200;display:flex;align-items:center;justify-content:center;padding:clamp(12px,3vw,40px);visibility:hidden;pointer-events:none}
+.modal.is-open{visibility:visible;pointer-events:auto}
+.modal__backdrop{position:absolute;inset:0;background:rgba(4,4,6,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;transition:opacity .6s var(--ease)}
+.modal.is-open .modal__backdrop{opacity:1}
+.modal__dialog{position:relative;width:min(1100px,100%);max-height:calc(100vh - 2*clamp(12px,3vw,40px));max-height:calc(100dvh - 2*clamp(12px,3vw,40px));overflow:auto;overscroll-behavior:contain;border-radius:28px;background:linear-gradient(180deg,#121218,#0b0b0f);border:1px solid var(--line-2);box-shadow:0 60px 140px -40px rgba(0,0,0,.9);opacity:0;transform:translateY(40px) scale(.97);transition:opacity .6s var(--ease),transform .8s var(--ease)}
+.modal.is-open .modal__dialog{opacity:1;transform:none}
+.modal__close{position:sticky;top:14px;float:right;margin:14px 14px -60px 0;z-index:10;width:46px;height:46px;border-radius:50%;background:rgba(20,20,26,.8);border:1px solid var(--line-2);display:grid;place-items:center;backdrop-filter:blur(10px);transition:transform .5s var(--ease),background .3s}
+.modal__close:hover{transform:rotate(90deg);background:var(--text);color:#0b0b0e}
+.modal__close svg{width:16px;height:16px}
+.m-proj__preview{position:relative;aspect-ratio:16/9;border-bottom:1px solid var(--line);overflow:hidden}
+.m-body{padding:clamp(24px,4vw,48px);display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,4vw,56px)}
+.m-body h2{font-size:clamp(2rem,4.4vw,3.8rem);letter-spacing:-.05em;line-height:1;font-weight:500;margin:14px 0 18px}
+.m-body h2 em{font-family:var(--f-serif);font-weight:400}
+.m-body p{color:var(--muted)}
+.m-list{display:grid;gap:0;border-top:1px solid var(--line)}
+.m-list li{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);font-size:.94rem}
+.m-list li svg{width:14px;height:14px;flex:none;margin-top:5px;color:var(--a2)}
+.m-kv{display:grid;gap:12px;margin:22px 0}
+.m-kv div{display:flex;justify-content:space-between;gap:16px;font-size:.9rem;color:var(--muted)}
+.m-kv b{color:var(--text);font-weight:500;text-align:right}
+.m-note{display:flex;gap:10px;padding:14px 16px;border-radius:14px;background:rgba(255,208,138,.06);border:1px solid rgba(255,208,138,.2);color:#e9d2ae;font-size:.84rem;margin-top:22px}
+.m-note svg{width:16px;height:16px;flex:none;margin-top:3px}
+.m-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.m-svc{padding:clamp(28px,4.4vw,56px)}
+.m-svc__head{display:flex;gap:20px;align-items:center;margin-bottom:10px}
+.m-svc .m-body{padding:0;margin-top:26px}
+
+.toasts{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:9600;display:grid;gap:10px;width:min(380px,calc(100vw - 32px));pointer-events:none}
+.toast{pointer-events:auto;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:14px 14px 14px 16px;border-radius:16px;background:rgba(20,20,26,.88);border:1px solid var(--line-2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 24px 60px -20px rgba(0,0,0,.8);font-size:.9rem;animation:toastIn .6s var(--ease);position:relative;overflow:hidden}
+.toast.is-out{animation:toastOut .45s var(--ease) forwards}
+.toast__i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;margin-top:1px}
+.toast__i svg{width:12px;height:12px}
+.toast--success .toast__i{background:rgba(126,226,184,.15);color:var(--ok)}
+.toast--error .toast__i{background:rgba(255,138,138,.15);color:var(--err)}
+.toast--info .toast__i{background:rgba(214,180,255,.15);color:var(--a2)}
+.toast__x{width:22px;height:22px;display:grid;place-items:center;color:var(--muted);border-radius:6px}
+.toast__x svg{width:12px;height:12px}
+.toast__bar{position:absolute;left:0;bottom:0;height:2px;background:var(--grad);transform-origin:left;animation:toastBar linear forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(.96)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(30px)}}
+@keyframes toastBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+.mobile-cta{display:none}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width:1280px){
+  .pricing__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero__bottom{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .hero__ctas{grid-column:1/-1}
+}
+@media (max-width:1100px){
+  .nav__links{display:none}
+  .burger{display:block}
+  .nav__cta{display:none}
+  .services__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .order__wrap{grid-template-columns:1fr}
+  .order__aside{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .about__grid{grid-template-columns:1fr}
+  .about__side{position:static;grid-template-columns:minmax(0,1fr) minmax(0,300px);align-items:end}
+  .estimate{grid-template-columns:1fr}
+  .estimate__addons{border-right:0;border-bottom:1px solid var(--line)}
+  .hero__scroll{display:none}
+  .m-body{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  :root{--nav-h:76px;--radius:20px}
+  .nav{padding:10px 0}
+  .nav__bar{padding:0 6px 0 14px;height:60px}
+  .nav.is-scrolled .nav__bar{background:rgba(12,12,16,.72)}
+  .nav__logo small{display:none}
+  .hero{justify-content:flex-end;padding-top:calc(var(--nav-h) + 28px)}
+  .hero__title{font-size:clamp(2.55rem,12.2vw,4.4rem);line-height:.92;max-width:none}
+  .hero__title .indent{padding-left:0}
+  .hero__top{margin-bottom:28px}
+  .hero__roles{display:none}
+  .hero__bottom{grid-template-columns:1fr;gap:22px;margin-top:32px}
+  .hero__ctas{display:grid;grid-template-columns:1fr;gap:10px}
+  .hero__ctas .btn{width:100%;justify-content:space-between}
+  .hero__grid{height:45%;background-size:48px 48px}
+  .section-head{grid-template-columns:1fr;gap:18px}
+  .services__grid{grid-template-columns:1fr}
+  .svc{min-height:340px;padding:24px}
+  .svc__big{font-size:11rem}
+  .work__track{grid-template-columns:1fr;gap:44px}
+  .proj__info{grid-template-columns:1fr}
+  .proj__btn{grid-row:auto;grid-column:1;justify-self:start}
+  .pricing__grid{grid-template-columns:1fr}
+  .price__desc{min-height:0}
+  .addons{grid-template-columns:1fr}
+  .estimate__addons,.estimate__sum{padding:24px}
+  .form{grid-template-columns:1fr}
+  .order__panel{padding:22px;min-height:640px}
+  .order__aside{grid-template-columns:1fr}
+  .form__submit .btn{width:100%;justify-content:space-between}
+  .contact__grid{grid-template-columns:1fr}
+  .cbtn{min-height:220px;gap:36px}
+  .about__side{grid-template-columns:1fr}
+  .about__portrait{max-width:none;aspect-ratio:5/4}
+  .principles{grid-template-columns:1fr}
+  .cap{grid-template-columns:36px minmax(0,1fr);gap:6px 12px;padding:20px 0}
+  .cap__d{grid-column:2;text-align:left}
+  .footer__grid{grid-template-columns:1fr 1fr}
+  .footer__brand{grid-column:1/-1}
+  .cta .btn{width:100%;max-width:360px;justify-content:space-between}
+  .m-proj__preview{aspect-ratio:4/3}
+  .modal{padding:0;align-items:flex-end}
+  .modal__dialog{border-radius:24px 24px 0 0;max-height:92vh;max-height:92dvh;transform:translateY(100%)}
+  .modal.is-open .modal__dialog{transform:none}
+  .mobile-cta{display:flex;position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:880;justify-content:space-between;align-items:center;gap:12px;padding:8px 8px 8px 18px;border-radius:999px;background:rgba(16,16,21,.82);border:1px solid var(--line-2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 20px 50px -20px rgba(0,0,0,.9);transform:translateY(160%);transition:transform .7s var(--ease)}
+  .mobile-cta.is-visible{transform:none}
+  .mobile-cta span{font-size:.84rem;color:var(--muted)}
+  .mobile-cta span b{color:var(--text);font-weight:500}
+  .toasts{bottom:max(84px,calc(env(safe-area-inset-bottom) + 72px))}
+}
+@media (max-width:420px){
+  .nav__logo span.nav__name{font-size:1rem}
+  .btn{padding-left:22px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .js [data-reveal],.js [data-split] .w>span,.hero-fade,.hero__title .line>span{opacity:1!important;transform:none!important;clip-path:none!important}
+  .about__statement .sw{opacity:1}
+}
+</style>
 </head>
 <body>
-    <h1>Miroslav — Web Developer</h1>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__inner">
+    <div class="loader__name"><span style="--i:0">M</span><span style="--i:1">i</span><span style="--i:2">r</span><span style="--i:3">o</span><span style="--i:4">s</span><span style="--i:5">l</span><span style="--i:6">a</span><span style="--i:7">v</span></div>
+    <div class="loader__meta"><span class="mono">Web Developer / Creative Developer</span><span class="loader__count" id="loaderCount">000</span></div>
+    <div class="loader__bar"><i id="loaderBar"></i></div>
+  </div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+<div class="cursor is-hidden" id="cursor" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label" id="cursorLabel">View</span></div><div class="cursor__dot"></div></div>
+
+<!-- ============ NAVIGATION ============ -->
+<header class="nav" id="nav">
+  <div class="container">
+    <nav class="nav__bar" aria-label="Primary">
+      <a href="#home" class="nav__logo" aria-label="Miroslav — back to top">
+        <span class="nav__mark"><svg viewBox="0 0 24 24" fill="none" stroke="url(#lg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="lg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#8f7dff"/><stop offset=".5" stop-color="#d6b4ff"/><stop offset="1" stop-color="#ffd2b0"/></linearGradient></defs><path d="M5 18V6l7 7 7-7v12"/></svg></span>
+        <span><span class="nav__name">Miroslav</span><small>Creative Developer</small></span>
+      </a>
+      <div class="nav__links" id="navLinks">
+        <span class="nav__pill" id="navPill"></span>
+        <a href="#home" data-nav="home">Home</a>
+        <a href="#about" data-nav="about">About</a>
+        <a href="#services" data-nav="services">Services</a>
+        <a href="#work" data-nav="work">Work</a>
+        <a href="#pricing" data-nav="pricing">Pricing</a>
+        <a href="#contact" data-nav="contact">Contact</a>
+      </div>
+      <div class="nav__right">
+        <a href="#order" class="btn btn--primary btn--sm nav__cta" data-magnetic>
+          <span class="btn__label"><span data-text="Start a project">Start a project</span></span>
+          <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mmenu"><span></span><span></span></button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- mobile menu -->
+<div class="mmenu" id="mmenu" aria-hidden="true">
+  <div class="mmenu__glow"></div>
+  <nav class="mmenu__links" aria-label="Mobile">
+    <a href="#home" style="--i:0"><small>01</small><span>Home</span></a>
+    <a href="#about" style="--i:1"><small>02</small><span>About</span></a>
+    <a href="#services" style="--i:2"><small>03</small><span>Services</span></a>
+    <a href="#work" style="--i:3"><small>04</small><span>Work</span></a>
+    <a href="#pricing" style="--i:4"><small>05</small><span>Pricing</span></a>
+    <a href="#contact" style="--i:5"><small>06</small><span>Contact</span></a>
+  </nav>
+  <div class="mmenu__foot">
+    <a href="#order" class="btn btn--primary btn--block">
+      <span class="btn__label"><span data-text="Start a project">Start a project</span></span>
+      <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+    <div class="mmenu__contacts">
+      <a href="https://t.me/zxcvntt" target="_blank" rel="noopener noreferrer">Telegram <small>@zxcvntt</small></a>
+      <a href="mailto:miroslav300812@gmail.com">Email <small>Write me</small></a>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+<!-- ============ HERO ============ -->
+<section class="hero" id="home" aria-label="Introduction">
+  <div class="hero__bg" aria-hidden="true">
+    <div class="hero__blob hero__blob--1" data-mouse="30"></div>
+    <div class="hero__blob hero__blob--2" data-mouse="-40"></div>
+    <div class="hero__blob hero__blob--3" data-mouse="22"></div>
+  </div>
+  <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero__grid" aria-hidden="true"></div>
+  <div class="hero__spot" id="heroSpot" aria-hidden="true"></div>
+  <div class="hero__vignette" aria-hidden="true"></div>
+
+  <div class="container hero__inner">
+    <div class="hero__top">
+      <span class="pill hero-fade" style="--d:.0s"><span class="dot"></span>Available for new projects</span>
+      <span class="mono hero__roles hero-fade" style="--d:.08s">Web Developer / Creative Developer / Digital Designer</span>
+    </div>
+
+    <h1 class="hero__title" data-parallax-hero>
+      <span class="line"><span>We build</span></span>
+      <span class="line"><span class="indent">digital experiences</span></span>
+      <span class="line"><span>that get <em class="grad-text">remembered.</em></span></span>
+    </h1>
+
+    <div class="hero__bottom">
+      <div class="hero__id hero-fade" style="--d:.1s">
+        <strong>Miroslav</strong>
+        <span>Web Developer / Creative Developer</span>
+      </div>
+      <p class="hero__copy hero-fade" style="--d:.18s">Modern, high-end websites for <b>brands, businesses and ambitious projects</b> — designed with intent, engineered for speed and animated to leave a lasting impression.</p>
+      <div class="hero__ctas hero-fade" style="--d:.26s">
+        <a href="#work" class="btn btn--ghost" data-magnetic>
+          <span class="btn__label"><span data-text="View work">View work</span></span>
+          <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+        </a>
+        <a href="#order" class="btn btn--primary" data-magnetic>
+          <span class="btn__label"><span data-text="Start a project">Start a project</span></span>
+          <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="hero__scroll hero-fade" style="--d:.4s" aria-hidden="true"><i></i>Scroll to explore</div>
+</section>
+
+<!-- marquee -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track" id="marqueeTrack"></div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section class="section about" id="about" aria-labelledby="aboutTitle">
+  <div class="container">
+    <span class="eyebrow" data-reveal>(01) — About</span>
+    <h2 class="sr-only" id="aboutTitle">About Miroslav</h2>
+    <p class="about__statement" data-scrub>I'm Miroslav — a web developer and digital designer who turns ideas into fast, refined websites. No templates, no shortcuts: just considered design, clean code and <em>motion with intent.</em></p>
+
+    <div class="about__grid">
+      <div class="about__side">
+        <div class="about__portrait" data-reveal="clip">
+          <div class="about__portrait-ring"></div>
+          <div class="about__portrait-mono" data-parallax="-0.06">M.</div>
+          <div class="about__portrait-meta"><span>Design + Code</span><small>One person · Zero handoffs</small></div>
+        </div>
+        <div>
+          <p data-reveal>I handle the whole journey — from the first sketch to the final deploy. You get one point of contact, a clear process and a website built to perform, not just to look good in a screenshot.</p>
+          <div style="margin-top:22px" data-reveal>
+            <a href="#order" class="btn btn--ghost btn--sm" data-magnetic>
+              <span class="btn__label"><span data-text="Let's talk">Let's talk</span></span>
+              <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <ul class="caps" aria-label="Capabilities">
+        <li class="cap" data-reveal><span class="cap__n">01</span><span class="cap__t">Custom websites</span><span class="cap__d">Built from scratch around your brand — never a recycled theme.</span></li>
+        <li class="cap" data-reveal><span class="cap__n">02</span><span class="cap__t">UI/UX design</span><span class="cap__d">Interfaces that feel obvious, elegant and effortless to use.</span></li>
+        <li class="cap" data-reveal><span class="cap__n">03</span><span class="cap__t">Responsive development</span><span class="cap__d">Pixel-perfect from a phone to a 4K display.</span></li>
+        <li class="cap" data-reveal><span class="cap__n">04</span><span class="cap__t">Animations</span><span class="cap__d">Cinematic motion that guides attention instead of stealing it.</span></li>
+        <li class="cap" data-reveal><span class="cap__n">05</span><span class="cap__t">Performance optimization</span><span class="cap__d">Lean code, fast loads and smooth 60fps interactions.</span></li>
+        <li class="cap" data-reveal><span class="cap__n">06</span><span class="cap__t">Modern frontend</span><span class="cap__d">Clean, maintainable architecture on a current stack.</span></li>
+        <li class="cap" data-reveal><span class="cap__n">07</span><span class="cap__t">Custom digital experiences</span><span class="cap__d">Interactive ideas that make people stop scrolling.</span></li>
+      </ul>
+    </div>
+
+    <div class="principles">
+      <article class="principle glass spot" data-reveal style="--d:0s"><span class="principle__k">Principle 01</span><h3>Built, not assembled</h3><p>Every layout, component and interaction is crafted for your project specifically.</p></article>
+      <article class="principle glass spot" data-reveal style="--d:.08s"><span class="principle__k">Principle 02</span><h3>Performance first</h3><p>Beautiful means nothing if it's slow. Speed is designed in from day one.</p></article>
+      <article class="principle glass spot" data-reveal style="--d:.16s"><span class="principle__k">Principle 03</span><h3>Motion with purpose</h3><p>Animation is used to tell a story and guide the eye — never as decoration.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="section services" id="services" aria-labelledby="servicesTitle">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" data-reveal>(02) — Services</span>
+      <h2 class="h-display" id="servicesTitle" data-split>What I <em>build</em></h2>
+      <p data-reveal>Six ways to turn an idea into a website people remember. Tap any card for details.</p>
+    </div>
+    <div class="services__grid" id="servicesGrid"></div>
+  </div>
+</section>
+
+<!-- ============ WORK ============ -->
+<section class="work" id="work" aria-labelledby="workTitle">
+  <div class="work__sticky" id="workSticky">
+    <div class="container">
+      <div class="work__head">
+        <div>
+          <span class="eyebrow" data-reveal>(03) — Selected concepts</span>
+          <h2 class="h-display" id="workTitle" data-split style="margin-top:22px">From idea <em>to interface</em></h2>
+        </div>
+        <div class="work__meta" data-reveal>
+          <span class="work__counter" id="workCounter">01 / 05</span>
+          <span class="work__bar"><i id="workBar"></i></span>
+          <span class="mono">Demo projects</span>
+        </div>
+      </div>
+    </div>
+    <div class="work__track-wrap">
+      <div class="container work__track-container">
+        <div class="work__track" id="workTrack"></div>
+      </div>
+    </div>
+    <div class="work__note-wrap container">
+      <p class="work__note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>All projects shown are demo concepts created to showcase design and development capabilities. They are not real client projects.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="section pricing" id="pricing" aria-labelledby="pricingTitle">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" data-reveal>(04) — Pricing</span>
+      <h2 class="h-display" id="pricingTitle" data-split>Clear <em>investment</em></h2>
+      <p data-reveal>Pick a starting point, add what you need and see your estimate update instantly. Final price is confirmed after a short brief.</p>
+    </div>
+    <div class="pricing__grid" id="pricingGrid" role="radiogroup" aria-label="Choose a package"></div>
+
+    <div class="estimate glass" data-reveal>
+      <div class="estimate__addons">
+        <h3>Tailor your package</h3>
+        <p>Optional extras — toggle to update the estimate and your order.</p>
+        <div class="addons" id="addons"></div>
+      </div>
+      <div class="estimate__sum" aria-live="polite">
+        <h3>Your estimate</h3>
+        <div class="sum-rows">
+          <div class="sum-row"><span>Package</span><b id="sumPackage">—</b></div>
+          <div class="sum-row"><span>Base</span><b id="sumBase">—</b></div>
+          <div class="sum-row"><span>Extras</span><b id="sumAddons">None</b></div>
+          <div class="sum-row"><span>Timeline</span><b id="sumTime">—</b></div>
+        </div>
+        <div class="sum-total"><span>Estimated from</span><strong id="sumTotal">—</strong></div>
+        <a href="#order" class="btn btn--primary btn--block" data-magnetic>
+          <span class="btn__label"><span data-text="Continue to order">Continue to order</span></span>
+          <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <p class="sum-note">Estimates are indicative. The final amount is always calculated and confirmed by the server before any payment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ORDER ============ -->
+<section class="section order" id="order" aria-labelledby="orderTitle">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" data-reveal>(05) — Start a project</span>
+      <h2 class="h-display" id="orderTitle" data-split>Let's make it <em>real</em></h2>
+      <p data-reveal>Tell me about your idea. You'll get a clear plan, timeline and next steps — no fluff.</p>
+    </div>
+
+    <div class="order__wrap">
+      <div class="order__panel glass" data-reveal>
+        <form class="form" id="orderForm" novalidate>
+          <div class="hp" aria-hidden="true"><label for="company">Company</label><input type="text" id="company" name="company" tabindex="-1" autocomplete="off"></div>
+
+          <div class="field" data-field="name">
+            <label for="fName">Name <i>*</i></label>
+            <input class="input" id="fName" name="name" type="text" autocomplete="name" placeholder="Your name" maxlength="80" aria-describedby="eName" required>
+            <span class="field__err" id="eName"></span>
+          </div>
+          <div class="field" data-field="telegram">
+            <label for="fTelegram">Telegram <i>*</i></label>
+            <input class="input" id="fTelegram" name="telegram" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="@username" maxlength="64" aria-describedby="eTelegram" required>
+            <span class="field__err" id="eTelegram"></span>
+          </div>
+          <div class="field field--full" data-field="email">
+            <label for="fEmail">Email <i>*</i></label>
+            <input class="input" id="fEmail" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="you@company.com" maxlength="120" aria-describedby="eEmail" required>
+            <span class="field__err" id="eEmail"></span>
+          </div>
+          <div class="field" data-field="websiteType">
+            <label for="fType">Website type <i>*</i></label>
+            <select class="input" id="fType" name="websiteType" aria-describedby="eType" required>
+              <option value="">Select a type</option>
+            </select>
+            <span class="field__err" id="eType"></span>
+          </div>
+          <div class="field" data-field="package">
+            <label for="fPackage">Selected package <i>*</i></label>
+            <select class="input" id="fPackage" name="package" aria-describedby="ePackage" required>
+              <option value="">Select a package</option>
+            </select>
+            <span class="field__err" id="ePackage"></span>
+          </div>
+          <div class="field field--full" data-field="description">
+            <label for="fDesc">Project description <i>*</i></label>
+            <textarea class="input" id="fDesc" name="description" rows="5" maxlength="2000" placeholder="What are you building? Goals, audience, references, deadline…" aria-describedby="eDesc hDesc" required></textarea>
+            <div class="field__hint" id="hDesc"><span>Minimum 20 characters</span><span id="descCount">0 / 2000</span></div>
+            <span class="field__err" id="eDesc"></span>
+          </div>
+
+          <label class="pay-toggle" id="payToggle">
+            <input type="checkbox" id="fPayOnline" name="payOnline" checked>
+            <span class="switch" aria-hidden="true"></span>
+            <span><b>Pay online after the order is created</b><small id="payHint">You'll be redirected to the secure payment page of the payment provider.</small></span>
+          </label>
+
+          <div class="form__submit">
+            <p class="form__legal">By submitting you agree to be contacted about your project. Your data is only used to prepare your offer.</p>
+            <button type="submit" class="btn btn--primary" id="submitBtn" data-magnetic>
+              <span class="btn__label"><span data-text="Start project" id="submitLabel">Start project</span></span>
+              <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="spinner"></span></span>
+            </button>
+          </div>
+        </form>
+
+        <div class="form-state" id="formState" role="status" aria-live="polite" data-type="loading">
+          <div class="form-state__icon" id="stateIcon"></div>
+          <h3 id="stateTitle"></h3>
+          <p id="stateText"></p>
+          <div class="form-state__meta" id="stateMeta"></div>
+          <div class="form-state__actions" id="stateActions"></div>
+        </div>
+      </div>
+
+      <aside class="order__aside">
+        <div class="aside-card glass" data-reveal style="--d:.08s">
+          <h3>Order summary <small id="asideBadge">Estimate</small></h3>
+          <div class="sum-rows">
+            <div class="sum-row"><span>Package</span><b id="oPackage">—</b></div>
+            <div class="sum-row"><span>Extras</span><b id="oAddons">None</b></div>
+            <div class="sum-row"><span>Timeline</span><b id="oTime">—</b></div>
+            <div class="sum-row"><span>Payment</span><b id="oPay">—</b></div>
+          </div>
+          <div class="sum-total" style="margin-top:16px"><span>Estimated from</span><strong id="oTotal">—</strong></div>
+        </div>
+        <div class="aside-card glass" data-reveal style="--d:.16s">
+          <h3>How it works <small>Live status</small></h3>
+          <ol class="flow" id="flow">
+            <li data-step="0"><span class="flow__dot">01</span><span class="flow__t"><b>Select package</b><small>Choose your starting point</small></span></li>
+            <li data-step="1"><span class="flow__dot">02</span><span class="flow__t"><b>Order</b><small>Share your project details</small></span></li>
+            <li data-step="2"><span class="flow__dot">03</span><span class="flow__t"><b>API</b><small>Order is registered securely</small></span></li>
+            <li data-step="3"><span class="flow__dot">04</span><span class="flow__t"><b>Payment service</b><small>Secure provider checkout</small></span></li>
+            <li data-step="4"><span class="flow__dot">05</span><span class="flow__t"><b>Result</b><small>Confirmed by the server</small></span></li>
+          </ol>
+          <div class="secure" style="margin-top:18px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><span>Payment details are entered only on the payment provider's page. This website never sees or stores card data.</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="section contact" id="contact" aria-labelledby="contactTitle">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" data-reveal>(06) — Contact</span>
+      <h2 class="h-display" id="contactTitle" data-split>Say <em>hello</em></h2>
+      <p data-reveal>Prefer a quick chat before the brief? Reach out directly — Telegram is the fastest way.</p>
+    </div>
+    <div class="contact__grid">
+      <a class="cbtn glass spot tilt" href="https://t.me/zxcvntt" target="_blank" rel="noopener noreferrer" data-tilt data-reveal data-cursor="Open">
+        <div class="cbtn__top">
+          <span class="cbtn__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.3a1.2 1.2 0 0 0-1.62-1.3L2.84 9.72c-1.02.4-1 1.86.03 2.22l4.4 1.53 1.7 5.36c.24.76 1.2.98 1.75.4l2.47-2.55 4.46 3.3c.7.52 1.7.14 1.9-.72L21.94 4.3zM9.3 13.1l8.3-6.1-6.6 7.3-.3 3-1.4-4.2z"/></svg></span>
+          <span class="cbtn__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+        </div>
+        <div>
+          <span class="cbtn__label">Fastest response</span>
+          <span class="cbtn__title">Contact on Telegram</span>
+          <span class="cbtn__handle" style="display:block">@zxcvntt</span>
+        </div>
+      </a>
+      <a class="cbtn glass spot tilt" href="mailto:miroslav300812@gmail.com" data-tilt data-reveal style="--d:.08s" data-cursor="Write">
+        <div class="cbtn__top">
+          <span class="cbtn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg></span>
+          <span class="cbtn__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+        </div>
+        <div>
+          <span class="cbtn__label">For detailed briefs</span>
+          <span class="cbtn__title">Send an email</span>
+          <span class="cbtn__handle" style="display:block">miroslav300812@gmail.com</span>
+        </div>
+      </a>
+    </div>
+    <div class="contact__extra" data-reveal>
+      <span>Based online · Working with clients worldwide</span>
+      <button type="button" class="copy-btn" id="copyEmail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy email</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="cta" aria-labelledby="ctaTitle">
+  <div class="cta__orb" aria-hidden="true"></div>
+  <div class="cta__rings" aria-hidden="true" data-parallax="0.08"><i style="width:40vw;height:40vw"></i><i style="width:62vw;height:62vw"></i><i style="width:86vw;height:86vw"></i></div>
+  <div class="container">
+    <span class="eyebrow" data-reveal>Next step</span>
+    <h2 class="cta__title" id="ctaTitle" data-split>Ready to build something <em>different?</em></h2>
+    <p data-reveal>Your next website shouldn't blend in. Let's create something people talk about.</p>
+    <div data-reveal>
+      <a href="#order" class="btn btn--primary" data-magnetic>
+        <span class="btn__label"><span data-text="Start a project">Start a project</span></span>
+        <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <strong>Miroslav</strong>
+        <span>Web Developer / Creative Developer</span>
+        <p>Premium websites, digital experiences and custom web projects for brands, businesses and ambitious ideas.</p>
+      </div>
+      <div>
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#about" class="link-u">About</a></li>
+          <li><a href="#services" class="link-u">Services</a></li>
+          <li><a href="#work" class="link-u">Work</a></li>
+          <li><a href="#pricing" class="link-u">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://t.me/zxcvntt" target="_blank" rel="noopener noreferrer" class="link-u">Telegram</a></li>
+          <li><a href="mailto:miroslav300812@gmail.com" class="link-u">Email</a></li>
+          <li><a href="#order" class="link-u">Start a project</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__word" aria-hidden="true" data-parallax="-0.05">Miroslav</div>
+    <div class="footer__bottom">
+      <span>© 2026 Miroslav. All rights reserved.</span>
+      <a href="#home" class="to-top">Back to top <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<!-- mobile floating CTA -->
+<div class="mobile-cta" id="mobileCta">
+  <span>Selected: <b id="mobilePkg">Pro</b></span>
+  <a href="#order" class="btn btn--primary btn--sm">
+    <span class="btn__label"><span data-text="Start a project">Start a project</span></span>
+    <span class="btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+  </a>
+</div>
+
+<!-- modal -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1" data-native-scroll>
+    <button class="modal__close" type="button" data-close aria-label="Close dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script>
+/* =====================================================================
+   CONFIG — connect your existing API / payment service here.
+   Never put private API keys, secrets or banking credentials in this file:
+   everything here is public. Authentication and price calculation must
+   happen on your server.
+   ===================================================================== */
+const CONFIG = {
+    API_BASE_URL: "YOUR_API_ENDPOINT",
+    ORDER_ENDPOINT: "/orders",
+    PAYMENT_ENDPOINT: "/payments",
+    REQUEST_TIMEOUT: 15000
+};
+
+/* ---------------------------------------------------------------------
+   Expected API contract (adapt the normalizers below if yours differs):
+
+   POST {API_BASE_URL}{ORDER_ENDPOINT}
+     body:  { clientRequestId, customer{name,telegram,email}, project{websiteType,description},
+              package{id,name,priceFrom}, addons[{id,label,price}], estimate{from,currency},
+              payOnline, meta{...} }
+     200/201 → { id | orderId, status, ... }            (or { order: {...} })
+
+   POST {API_BASE_URL}{PAYMENT_ENDPOINT}
+     body:  { orderId, packageId, addons[], currency, returnUrl, cancelUrl }
+     200/201 → { id | paymentId, status, checkoutUrl | paymentUrl | url }
+
+   GET  {API_BASE_URL}{PAYMENT_ENDPOINT}/{paymentId}     (payment verification)
+   GET  {API_BASE_URL}{PAYMENT_ENDPOINT}?orderId={id}    (fallback when no paymentId)
+     200 → { id, orderId, status: "paid" | "pending" | "failed" | ... }
+
+   The payment provider should redirect back to returnUrl, e.g.
+   index.html?payment=return&order_id=123&payment_id=abc
+   The page then asks YOUR API for the real status — URL params alone are never trusted.
+   --------------------------------------------------------------------- */
+
+/* =====================================================================
+   PRICING — single source of truth. Edit prices, features and extras here.
+   ===================================================================== */
+const PRICING = {
+    currency: "UAH",
+    defaultPackage: "pro",
+    packages: {
+        start: {
+            id: "start",
+            name: "Start",
+            price: 5000,
+            priceLabel: "from 5,000 UAH",
+            description: "A sharp, focused website to launch fast and look professional.",
+            timeline: "~1 week",
+            payable: true,
+            badge: null,
+            features: [
+                { label: "Responsive design", value: "All devices", included: true },
+                { label: "Custom UI", value: "Clean, focused layout", included: true },
+                { label: "Animations", value: "Essential transitions", included: true },
+                { label: "Pages", value: "1 landing page", included: true },
+                { label: "Forms", value: "Contact form", included: true },
+                { label: "Basic SEO", value: "Meta & structure", included: true },
+                { label: "Performance optimization", value: "Standard", included: true },
+                { label: "Support", value: "7 days after launch", included: true }
+            ]
+        },
+        pro: {
+            id: "pro",
+            name: "Pro",
+            price: 10000,
+            priceLabel: "from 10,000 UAH",
+            description: "A fully custom website with motion and a structure built to grow.",
+            timeline: "2–3 weeks",
+            payable: true,
+            badge: "Recommended",
+            features: [
+                { label: "Responsive design", value: "All devices", included: true },
+                { label: "Custom UI", value: "Fully custom design", included: true },
+                { label: "Animations", value: "Scroll & hover motion", included: true },
+                { label: "Pages", value: "Up to 5 pages", included: true },
+                { label: "Forms", value: "Up to 2 forms", included: true },
+                { label: "Basic SEO", value: "On-page SEO setup", included: true },
+                { label: "Performance optimization", value: "Advanced", included: true },
+                { label: "Support", value: "14 days after launch", included: true }
+            ]
+        },
+        premium: {
+            id: "premium",
+            name: "Premium",
+            price: 20000,
+            priceLabel: "from 20,000 UAH",
+            description: "A flagship digital experience with cinematic motion and zero compromise.",
+            timeline: "3–5 weeks",
+            payable: true,
+            badge: null,
+            features: [
+                { label: "Responsive design", value: "All devices, 4K ready", included: true },
+                { label: "Custom UI", value: "Bespoke design system", included: true },
+                { label: "Animations", value: "Cinematic motion design", included: true },
+                { label: "Pages", value: "Up to 10 pages", included: true },
+                { label: "Forms", value: "Advanced forms & integrations", included: true },
+                { label: "Basic SEO", value: "Extended SEO setup", included: true },
+                { label: "Performance optimization", value: "90+ Lighthouse target", included: true },
+                { label: "Support", value: "30 days after launch", included: true }
+            ]
+        },
+        custom: {
+            id: "custom",
+            name: "Custom",
+            price: null,
+            priceLabel: "Custom quote",
+            description: "Web apps, platforms and unique ideas — scoped precisely around you.",
+            timeline: "Scoped together",
+            payable: false,
+            badge: null,
+            features: [
+                { label: "Responsive design", value: "All devices", included: true },
+                { label: "Custom UI", value: "Bespoke product design", included: true },
+                { label: "Animations", value: "Advanced / interactive", included: true },
+                { label: "Pages", value: "Any scope", included: true },
+                { label: "Forms", value: "Custom logic & APIs", included: true },
+                { label: "Basic SEO", value: "Technical SEO", included: true },
+                { label: "Performance optimization", value: "Architecture-level", included: true },
+                { label: "Support", value: "Ongoing, by agreement", included: true }
+            ]
+        }
+    },
+    addons: [
+        { id: "extra-page", label: "Additional page", price: 1000 },
+        { id: "copywriting", label: "Copywriting", price: 2000 },
+        { id: "cms", label: "CMS integration", price: 3000 },
+        { id: "express", label: "Express delivery", price: 3000 },
+        { id: "support", label: "Extended support (1 month)", price: 1500 },
+        { id: "analytics", label: "Analytics setup", price: 800 }
+    ]
+};
+
+/* =====================================================================
+   CONTENT DATA
+   ===================================================================== */
+const ICONS = {
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    arrowUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>',
+    loader: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z"/></svg>',
+    tg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.3a1.2 1.2 0 0 0-1.62-1.3L2.84 9.72c-1.02.4-1 1.86.03 2.22l4.4 1.53 1.7 5.36c.24.76 1.2.98 1.75.4l2.47-2.55 4.46 3.3c.7.52 1.7.14 1.9-.72L21.94 4.3z"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>'
+};
+
+const WEBSITE_TYPES = ["Landing Page", "Business Website", "Portfolio Website", "E-commerce", "Custom Web Application", "UI/UX Design", "Other"];
+
+const SERVICES = [
+    {
+        title: "Landing Pages", type: "Landing Page",
+        desc: "High-converting single pages for products, campaigns and launches — fast, focused and impossible to ignore.",
+        tags: ["Conversion", "Motion", "Speed"], timeline: "5–10 days", from: "start",
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 14h8M10 17h4"/></svg>',
+        includes: ["Conversion-focused structure and copy flow", "Custom visual design and art direction", "Scroll-driven animations and micro-interactions", "Lead forms with validation", "Analytics-ready setup"]
+    },
+    {
+        title: "Business Websites", type: "Business Website",
+        desc: "Multi-page websites that make a company look as serious as it is. Clear structure, sharp design, ready to grow.",
+        tags: ["Multi-page", "SEO", "Scalable"], timeline: "2–4 weeks", from: "pro",
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6M3 21h18"/></svg>',
+        includes: ["Information architecture for all key pages", "Consistent custom design system", "Contact, booking or request forms", "On-page SEO foundations", "Easy to extend with new pages"]
+    },
+    {
+        title: "Portfolio Websites", type: "Portfolio Website",
+        desc: "Personal brands and creatives presented with editorial precision — a site that works as hard as your work.",
+        tags: ["Editorial", "Personal brand", "Galleries"], timeline: "1–3 weeks", from: "pro",
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.6"/><rect x="13" y="3" width="8" height="5" rx="1.6"/><rect x="13" y="10" width="8" height="11" rx="1.6"/><rect x="3" y="13" width="8" height="8" rx="1.6"/></svg>',
+        includes: ["Editorial layouts with strong typography", "Project and case-study pages", "Smooth gallery and media experiences", "Page transitions and tasteful motion", "Contact flow that turns visitors into clients"]
+    },
+    {
+        title: "E-commerce", type: "E-commerce",
+        desc: "Premium storefronts with refined product pages, smooth checkout flows and a brand-first shopping experience.",
+        tags: ["Storefront", "Product UX", "Checkout"], timeline: "3–6 weeks", from: "premium",
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.2 11.3a2 2 0 0 1-2 1.7H8.2a2 2 0 0 1-2-1.7z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>',
+        includes: ["Catalog, product and cart experiences", "Conversion-focused product pages", "Integration with your payment provider", "Fast image delivery and performance", "Mobile-first shopping flow"]
+    },
+    {
+        title: "Custom Web Applications", type: "Custom Web Application",
+        desc: "Dashboards, platforms and interactive tools with clean architecture, real data and interfaces people enjoy using.",
+        tags: ["Dashboards", "APIs", "Architecture"], timeline: "Scoped together", from: "custom",
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>',
+        includes: ["Product and UX discovery", "Component-driven frontend architecture", "Integration with your APIs and services", "Authentication-aware interfaces", "Scalable, maintainable codebase"]
+    },
+    {
+        title: "UI/UX Design", type: "UI/UX Design",
+        desc: "Interface design, prototypes and design systems — from wireframes to pixel-perfect, development-ready screens.",
+        tags: ["Prototypes", "Design systems", "Research"], timeline: "1–4 weeks", from: "pro",
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.6 7.6"/><circle cx="11" cy="11" r="2"/></svg>',
+        includes: ["User flows and wireframes", "High-fidelity interface design", "Interactive prototypes", "Reusable design system and components", "Developer-ready handoff"]
+    }
+];
+
+const PROJECTS = [
+    {
+        key: "fashion", title: "Maison Noir", category: "Luxury Fashion", type: "Portfolio Website", url: "maison-noir.demo",
+        desc: "An editorial storefront concept for a luxury fashion house — quiet typography, cinematic imagery and slow, deliberate motion.",
+        explores: ["Editorial serif typography at huge scale", "Arched image masks and slow parallax", "Minimal navigation that lets visuals breathe", "Collection storytelling instead of product grids"],
+        stack: ["HTML", "CSS", "JavaScript", "Motion"]
+    },
+    {
+        key: "ai", title: "Synapse AI", category: "AI Startup", type: "Landing Page", url: "synapse-ai.demo",
+        desc: "A launch page concept for an AI product — a living gradient orb, a focused prompt interface and a sharp value proposition.",
+        explores: ["Animated conic-gradient hero visual", "Prompt-style call to action", "Dark UI with restrained accent glow", "Clear, conversion-first page structure"],
+        stack: ["HTML", "CSS", "JavaScript", "Canvas"]
+    },
+    {
+        key: "agency", title: "Studio Kinetic", category: "Creative Agency", type: "Business Website", url: "studio-kinetic.demo",
+        desc: "A bold identity-driven concept for a creative studio — oversized type, primary shapes and playful kinetic interactions.",
+        explores: ["Oversized outlined typography", "Blend-mode geometric shapes", "Grid-based editorial layout", "Hover-reactive kinetic elements"],
+        stack: ["HTML", "CSS", "JavaScript", "Interaction"]
+    },
+    {
+        key: "shop", title: "Aurum Objects", category: "Premium E-commerce", type: "E-commerce", url: "aurum-objects.demo",
+        desc: "A premium e-commerce concept for design objects — warm metallic tones, refined product cards and a calm shopping rhythm.",
+        explores: ["Luxury product card system", "Warm metallic colour palette", "Serif + sans typographic pairing", "Hover states that feel tactile"],
+        stack: ["HTML", "CSS", "JavaScript", "E-commerce UX"]
+    },
+    {
+        key: "saas", title: "Metric OS", category: "SaaS Platform", type: "Custom Web Application", url: "metric-os.demo",
+        desc: "A dashboard concept for a SaaS analytics platform — clear KPIs, readable charts and a calm, focused dark interface.",
+        explores: ["Dashboard information hierarchy", "Readable KPI cards and charts", "Sidebar navigation patterns", "Dark UI tuned for long sessions"],
+        stack: ["HTML", "CSS", "JavaScript", "Data UI"]
+    }
+];
+
+/* =====================================================================
+   UTILITIES
+   ===================================================================== */
+const $ = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const FINE = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+const fmtNum = (n) => new Intl.NumberFormat("en-US").format(n);
+const fmtMoney = (n) => fmtNum(n) + " " + PRICING.currency;
+const escapeHTML = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const uid = () => {
+    try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) { /* insecure context */ }
+    return "req-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+};
+const storage = {
+    get(k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch (e) { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+    del(k) { try { sessionStorage.removeItem(k); } catch (e) { /* storage unavailable */ } }
+};
+const btnHTML = (label, { variant = "primary", icon = ICONS.arrow, attrs = "", tag = "button", sm = false } = {}) => {
+    const t = escapeHTML(label);
+    const typeAttr = tag === "button" ? ' type="button"' : "";
+    return `<${tag}${typeAttr} class="btn btn--${variant}${sm ? " btn--sm" : ""}" ${attrs}><span class="btn__label"><span data-text="${t}">${t}</span></span><span class="btn__icon">${icon}</span></${tag}>`;
+};
+
+/* =====================================================================
+   API LAYER — modular, no secrets, real HTTP status + timeout handling
+   ===================================================================== */
+class ApiError extends Error {
+    constructor(message, { status = 0, code = "API_ERROR", details = null } = {}) {
+        super(message);
+        this.name = "ApiError";
+        this.status = status;
+        this.code = code;
+        this.details = details;
+    }
+}
+
+function isApiConfigured() {
+    const base = String(CONFIG.API_BASE_URL || "").trim();
+    if (!base || base === "YOUR_API_ENDPOINT") return false;
+    return /^https?:\/\//i.test(base) || base.startsWith("/");
+}
+
+function buildUrl(endpoint) {
+    return String(CONFIG.API_BASE_URL).trim().replace(/\/+$/, "") + "/" + String(endpoint).replace(/^\/+/, "");
+}
+
+async function apiRequest(endpoint, { method = "GET", body, headers = {} } = {}) {
+    if (!isApiConfigured()) {
+        throw new ApiError("The order service is not connected yet.", { code: "NOT_CONFIGURED" });
+    }
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), CONFIG.REQUEST_TIMEOUT);
+    let response, text;
+    try {
+        response = await fetch(buildUrl(endpoint), {
+            method,
+            headers: {
+                "Accept": "application/json",
+                ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+                ...headers
+            },
+            body: body !== undefined ? JSON.stringify(body) : undefined,
+            signal: controller.signal
+        });
+        text = await response.text();
+    } catch (err) {
+        if (err && err.name === "AbortError") {
+            throw new ApiError("The server took too long to respond. Please try again.", { code: "TIMEOUT" });
+        }
+        throw new ApiError("Could not reach the server. Please check your connection and try again.", { code: "NETWORK" });
+    } finally {
+        clearTimeout(timer);
+    }
+
+    let data = null;
+    if (text) {
+        try { data = JSON.parse(text); } catch (e) { data = null; }
+    }
+    if (!response.ok) {
+        const serverMsg = data && (data.message || data.error || (data.errors && data.errors[0] && data.errors[0].message));
+        const fallback = response.status >= 500
+            ? "The server ran into a problem. Please try again in a moment."
+            : response.status === 429
+                ? "Too many requests. Please wait a moment and try again."
+                : `Request failed (HTTP ${response.status}).`;
+        throw new ApiError(typeof serverMsg === "string" && serverMsg ? serverMsg : fallback, { status: response.status, code: "HTTP_" + response.status, details: data });
+    }
+    if (text && data === null) {
+        throw new ApiError("The server returned an unexpected response.", { status: response.status, code: "BAD_RESPONSE" });
+    }
+    return data || {};
+}
+
+/** Create an order on your API. Resolves only when the server confirms an order id. */
+async function createOrder(data) {
+    const res = await apiRequest(CONFIG.ORDER_ENDPOINT, {
+        method: "POST",
+        body: data,
+        headers: { "Idempotency-Key": data.clientRequestId }
+    });
+    const order = (res && (res.order || res.data)) || res;
+    const id = order && (order.id ?? order.orderId ?? order.order_id);
+    if (id === undefined || id === null || id === "") {
+        throw new ApiError("The order was not confirmed by the server.", { code: "BAD_RESPONSE", details: res });
+    }
+    return {
+        ...order,
+        id: String(id),
+        packageId: order.packageId || data.package.id,
+        addons: order.addons || data.addons.map((a) => a.id)
+    };
+}
+
+/** Ask your API to create a payment for a confirmed order. The amount is calculated server-side. */
+async function createPayment(order) {
+    if (!order || !order.id) {
+        throw new ApiError("A payment can only be started for a confirmed order.", { code: "NO_ORDER" });
+    }
+    const pageUrl = window.location.href.split(/[?#]/)[0];
+    const q = "order_id=" + encodeURIComponent(order.id);
+    const res = await apiRequest(CONFIG.PAYMENT_ENDPOINT, {
+        method: "POST",
+        body: {
+            orderId: order.id,
+            packageId: order.packageId,
+            addons: (order.addons || []).map((a) => (typeof a === "string" ? a : a.id)),
+            currency: PRICING.currency,
+            returnUrl: `${pageUrl}?payment=return&${q}`,
+            cancelUrl: `${pageUrl}?payment=cancel&${q}`
+        },
+        headers: { "Idempotency-Key": "payment-" + order.id }
+    });
+    return normalizePayment(res, order.id);
+}
+
+/** Fetch the real payment status from your API (used after returning from the provider). */
+async function verifyPayment({ paymentId, orderId }) {
+    let res;
+    if (paymentId) {
+        res = await apiRequest(`${CONFIG.PAYMENT_ENDPOINT}/${encodeURIComponent(paymentId)}`);
+    } else if (orderId) {
+        res = await apiRequest(`${CONFIG.PAYMENT_ENDPOINT}?orderId=${encodeURIComponent(orderId)}`);
+    } else {
+        throw new ApiError("No payment reference found to verify.", { code: "NO_REFERENCE" });
+    }
+    return normalizePayment(res, orderId);
+}
+
+function normalizePayment(res, orderId) {
+    const p = (res && (res.payment || res.data)) || res || {};
+    const id = p.id ?? p.paymentId ?? p.payment_id ?? null;
+    return {
+        ...p,
+        id: id !== null && id !== undefined ? String(id) : null,
+        orderId: String(p.orderId ?? p.order_id ?? orderId ?? ""),
+        status: String(p.status ?? p.state ?? "").toLowerCase(),
+        checkoutUrl: p.checkoutUrl ?? p.paymentUrl ?? p.checkout_url ?? p.payment_url ?? p.url ?? null
+    };
+}
+
+const PAYMENT_STATUS = {
+    success: ["paid", "succeeded", "success", "completed", "confirmed", "approved", "captured"],
+    pending: ["pending", "processing", "created", "requires_action", "waiting", "in_progress", "new", "hold"],
+    failed: ["failed", "declined", "canceled", "cancelled", "expired", "error", "rejected", "reversed"]
+};
+
+function safeCheckoutUrl(raw) {
+    if (!raw) return null;
+    try {
+        const u = new URL(raw, window.location.href);
+        const local = ["localhost", "127.0.0.1"].includes(u.hostname);
+        if (u.protocol === "https:" || (u.protocol === "http:" && local)) return u.href;
+    } catch (e) { /* invalid url */ }
+    return null;
+}
+
+/**
+ * Decide what to show based on a payment object that came FROM THE API.
+ * Success is shown only when the server reports a confirmed status.
+ */
+async function handlePaymentResult(result) {
+    if (!result || typeof result !== "object") {
+        Flow.set(3, "error");
+        showState({ type: "error", title: "Payment could not be started", text: "The payment service returned no data. No money has been charged. Please try again or contact me directly.", actions: contactActions(true) });
+        return "error";
+    }
+    const status = String(result.status || "").toLowerCase();
+    const meta = [result.orderId && `Order #${result.orderId}`, result.id && `Payment ${result.id}`].filter(Boolean);
+
+    if (PAYMENT_STATUS.success.includes(status)) {
+        storage.del("pendingPayment");
+        Flow.set(4, "done");
+        showState({ type: "success", title: "Payment confirmed.", text: "Your payment was confirmed by the payment service. I'll contact you on Telegram or by email to kick off the project.", meta, actions: [{ label: "Back to site", variant: "ghost", onClick: resetForm }] });
+        toast("Payment confirmed by the server.", "success");
+        return "success";
+    }
+
+    if (PAYMENT_STATUS.failed.includes(status)) {
+        storage.del("pendingPayment");
+        Flow.set(3, "error");
+        showState({ type: "error", title: "Payment was not completed.", text: `The payment service reported the status “${escapeHTML(status)}”. Your order is saved — you can try the payment again or contact me directly.`, meta, actions: [
+            ...(result.orderId ? [{ label: "Retry payment", variant: "primary", onClick: () => retryPayment(result.orderId) }] : []),
+            ...contactActions(false)
+        ] });
+        return "failed";
+    }
+
+    const checkout = safeCheckoutUrl(result.checkoutUrl);
+    if (result.checkoutUrl && !checkout) {
+        Flow.set(3, "error");
+        showState({ type: "error", title: "Invalid payment link.", text: "The payment service returned a link that isn't a secure HTTPS address, so it was blocked. No money has been charged. Please contact me and I'll send a payment link manually.", meta, actions: contactActions(false) });
+        return "error";
+    }
+    if (checkout) {
+        storage.set("pendingPayment", { paymentId: result.id, orderId: result.orderId, at: Date.now() });
+        Flow.set(3, "active");
+        showState({ type: "redirect", title: "Redirecting to secure payment…", text: "Your order was created. You're being redirected to the payment provider. After paying you'll return here and the result will be verified with the server.", meta, actions: [{ label: "Continue to payment", variant: "primary", href: checkout, icon: ICONS.arrowUp }] });
+        setTimeout(() => { window.location.assign(checkout); }, 1600);
+        return "redirect";
+    }
+
+    if (PAYMENT_STATUS.pending.includes(status)) {
+        Flow.set(3, "active");
+        showState({ type: "pending", title: "Payment is processing.", text: "The payment service hasn't confirmed the payment yet. This page does not assume success — check the status again in a moment.", meta, actions: [
+            { label: "Check status", variant: "primary", onClick: () => checkPaymentStatus({ paymentId: result.id, orderId: result.orderId }) },
+            ...contactActions(false)
+        ] });
+        return "pending";
+    }
+
+    Flow.set(3, "error");
+    showState({ type: "error", title: "Unknown payment status.", text: "The payment service returned a status this page doesn't recognise, so success is not assumed. Please contact me and I'll check it manually.", meta, actions: contactActions(false) });
+    return "unknown";
+}
+
+async function checkPaymentStatus(ref) {
+    showState({ type: "loading", title: "Verifying payment…", text: "Asking the server for the real payment status." });
+    Flow.fill(3);
+    try {
+        const verified = await verifyPayment(ref);
+        await handlePaymentResult(verified);
+    } catch (err) {
+        Flow.set(3, "error");
+        showState({ type: "error", title: "Couldn't verify the payment.", text: humanError(err), actions: [
+            { label: "Try again", variant: "primary", onClick: () => checkPaymentStatus(ref) },
+            ...contactActions(false)
+        ] });
+    }
+}
+
+async function retryPayment(orderId) {
+    showState({ type: "loading", title: "Starting payment…", text: "Creating a new secure payment session." });
+    Flow.fill(3);
+    try {
+        const payment = await createPayment({ id: orderId, packageId: State.packageId, addons: [...State.addons] });
+        await handlePaymentResult(payment);
+    } catch (err) {
+        Flow.set(3, "error");
+        showState({ type: "error", title: "Payment could not be started.", text: humanError(err) + " No money has been charged.", actions: [
+            { label: "Try again", variant: "primary", onClick: () => retryPayment(orderId) },
+            ...contactActions(false)
+        ] });
+    }
+}
+
+function humanError(err) {
+    if (err instanceof ApiError) {
+        if (err.code === "NOT_CONFIGURED") return "The online order service isn't connected yet. Please send your brief via Telegram or email — I'll reply personally.";
+        return err.message;
+    }
+    return "Something unexpected happened. Please try again.";
+}
+
+function contactActions(includeEdit) {
+    const a = [
+        { label: "Contact on Telegram", variant: "ghost", href: "https://t.me/zxcvntt", external: true, icon: ICONS.tg },
+        { label: "Send an email", variant: "ghost", href: "mailto:miroslav300812@gmail.com", icon: ICONS.mail }
+    ];
+    if (includeEdit) a.unshift({ label: "Edit details", variant: "ghost", onClick: hideState, icon: ICONS.arrow });
+    return a;
+}
+
+/* =====================================================================
+   APP STATE (package + addons → order data)
+   ===================================================================== */
+const State = {
+    packageId: PRICING.defaultPackage,
+    addons: new Set(),
+    get pkg() { return PRICING.packages[this.packageId] || null; },
+    get addonList() { return PRICING.addons.filter((a) => this.addons.has(a.id)); },
+    get addonsTotal() { return this.addonList.reduce((s, a) => s + a.price, 0); },
+    get estimate() { const p = this.pkg; return p && typeof p.price === "number" ? p.price + this.addonsTotal : null; },
+    get orderData() {
+        const p = this.pkg;
+        return {
+            package: p ? { id: p.id, name: p.name, priceFrom: p.price } : null,
+            addons: this.addonList.map((a) => ({ id: a.id, label: a.label, price: a.price })),
+            estimate: { from: this.estimate, currency: PRICING.currency }
+        };
+    }
+};
+
+/* =====================================================================
+   TOASTS
+   ===================================================================== */
+function toast(message, type = "info", duration = 4200) {
+    const wrap = $("#toasts");
+    const el = document.createElement("div");
+    el.className = `toast toast--${type}`;
+    el.setAttribute("role", type === "error" ? "alert" : "status");
+    const icon = type === "success" ? ICONS.check : type === "error" ? ICONS.x : ICONS.info;
+    el.innerHTML = `<span class="toast__i">${icon}</span><span></span><button class="toast__x" type="button" aria-label="Dismiss">${ICONS.x}</button><i class="toast__bar" style="animation-duration:${duration}ms"></i>`;
+    el.children[1].textContent = message;
+    const remove = () => { if (!el.isConnected) return; el.classList.add("is-out"); setTimeout(() => el.remove(), 450); };
+    el.querySelector(".toast__x").addEventListener("click", remove);
+    wrap.appendChild(el);
+    while (wrap.children.length > 3) wrap.firstElementChild.remove();
+    setTimeout(remove, duration);
+}
+
+/* =====================================================================
+   MODAL
+   ===================================================================== */
+const Modal = (() => {
+    const modal = $("#modal");
+    const content = $("#modalContent");
+    const dialog = $(".modal__dialog", modal);
+    let lastFocus = null;
+    function open(html) {
+        lastFocus = document.activeElement;
+        content.innerHTML = html;
+        dialog.scrollTop = 0;
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        Scroll.lock(true);
+        setTimeout(() => dialog.focus({ preventScroll: true }), 50);
+        bindInteractive(content);
+    }
+    function close() {
+        if (!modal.classList.contains("is-open")) return;
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        Scroll.lock(false);
+        if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    }
+    modal.addEventListener("click", (e) => { if (e.target.closest("[data-close]")) close(); });
+    document.addEventListener("keydown", (e) => {
+        if (!modal.classList.contains("is-open")) return;
+        if (e.key === "Escape") close();
+        if (e.key === "Tab") {
+            const f = $$('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])', dialog).filter((x) => x.offsetParent !== null);
+            if (!f.length) return;
+            const first = f[0], last = f[f.length - 1];
+            if (e.shiftKey && (document.activeElement === first || document.activeElement === dialog)) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+    });
+    return { open, close, isOpen: () => modal.classList.contains("is-open") };
+})();
+
+/* =====================================================================
+   SMOOTH SCROLL (lightweight inertial wheel scrolling, native on touch)
+   ===================================================================== */
+const Scroll = (() => {
+    let target = window.scrollY, current = window.scrollY, running = false, locked = false, anim = null;
+    const enabled = FINE && !REDUCED;
+    const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
+
+    function canScrollInside(el, dy) {
+        while (el && el !== document.body && el !== document.documentElement) {
+            if (el.hasAttribute && el.hasAttribute("data-native-scroll")) return true;
+            const st = getComputedStyle(el);
+            if (/(auto|scroll)/.test(st.overflowY) && el.scrollHeight > el.clientHeight) {
+                if ((dy > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 1) || (dy < 0 && el.scrollTop > 0)) return true;
+            }
+            el = el.parentElement;
+        }
+        return false;
+    }
+    function loop() {
+        if (anim) {
+            const t = clamp((performance.now() - anim.start) / anim.dur, 0, 1);
+            const e = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            current = anim.from + (anim.to - anim.from) * e;
+            target = current;
+            if (t >= 1) { anim = null; }
+        } else {
+            current = lerp(current, target, 0.1);
+            if (Math.abs(target - current) < 0.4) current = target;
+        }
+        window.scrollTo(0, current);
+        if (anim || current !== target) requestAnimationFrame(loop);
+        else running = false;
+    }
+    function kick() { if (!running) { running = true; requestAnimationFrame(loop); } }
+
+    if (enabled) {
+        document.documentElement.classList.add("smooth-wheel");
+        window.addEventListener("wheel", (e) => {
+            if (e.ctrlKey || locked) return;
+            let dy = e.deltaY;
+            if (e.deltaMode === 1) dy *= 32; else if (e.deltaMode === 2) dy *= window.innerHeight;
+            if (canScrollInside(e.target, dy)) return;
+            if (Math.abs(e.deltaX) > Math.abs(dy)) return;
+            e.preventDefault();
+            anim = null;
+            if (!running) current = window.scrollY;
+            target = clamp(target + dy, 0, maxScroll());
+            kick();
+        }, { passive: false });
+        window.addEventListener("scroll", () => { if (!running) { target = current = window.scrollY; } }, { passive: true });
+    }
+
+    function to(dest, { offset = 0, immediate = false } = {}) {
+        let y = typeof dest === "number" ? dest : (dest.getBoundingClientRect().top + window.scrollY);
+        y = clamp(y + offset, 0, maxScroll());
+        if (REDUCED || immediate) { window.scrollTo(0, y); target = current = y; return; }
+        if (!enabled) { window.scrollTo({ top: y, behavior: "smooth" }); return; }
+        const dist = Math.abs(y - window.scrollY);
+        current = window.scrollY;
+        anim = { from: current, to: y, start: performance.now(), dur: clamp(dist * 0.35, 600, 1600) };
+        kick();
+    }
+    function lock(state) {
+        locked = state;
+        document.body.classList.toggle("is-locked", state);
+        if (state) { anim = null; target = current = window.scrollY; }
+    }
+    return { to, lock, get enabled() { return enabled; } };
+})();
+
+function navOffset(id) { return id === "home" || id === "work" ? 0 : -(parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 84) - 12; }
+
+function goTo(hash) {
+    const id = hash.replace("#", "");
+    const el = document.getElementById(id);
+    if (!el) return;
+    Scroll.to(id === "home" ? 0 : el, { offset: navOffset(id) });
+    if (history.replaceState) history.replaceState(null, "", "#" + id);
+}
+
+/* =====================================================================
+   RENDER — marquee, services, projects, pricing
+   ===================================================================== */
+function renderMarquee() {
+    const words = ["Landing Pages", "Creative Development", "Business Websites", "UI/UX Design", "E-commerce", "Motion Design", "Web Applications", "Performance"];
+    const group = words.map((w, i) => `<span class="marquee__item${i % 4 === 2 ? " is-serif" : ""}">${w}</span><span class="marquee__star">${ICONS.star}</span>`).join("");
+    $("#marqueeTrack").innerHTML = `<div class="marquee__group">${group}</div><div class="marquee__group">${group}</div>`;
+}
+
+function renderServices() {
+    $("#servicesGrid").innerHTML = SERVICES.map((s, i) => {
+        const n = String(i + 1).padStart(2, "0");
+        return `<div data-reveal style="--d:${(i % 3) * 0.08}s">
+        <button type="button" class="svc glass spot tilt" data-tilt data-service="${i}" data-cursor="Details" aria-label="${escapeHTML(s.title)} — view details">
+            <span class="svc__big" aria-hidden="true">${n}</span>
+            <span class="svc__top"><span class="svc__n"><b>${n}</b> — Service</span><span class="svc__icon">${s.icon}</span></span>
+            <span class="svc__body">
+                <span class="svc__title" style="display:block">${escapeHTML(s.title)}</span>
+                <span class="svc__desc" style="display:block">${escapeHTML(s.desc)}</span>
+                <span class="svc__tags">${s.tags.map((t) => `<span class="tag">${escapeHTML(t)}</span>`).join("")}</span>
+                <span class="svc__more">Explore service ${ICONS.arrow}</span>
+            </span>
+        </button></div>`;
+    }).join("");
+}
+
+function previewHTML(p) {
+    const bar = `<div class="pv__bar"><i></i><i></i><i></i><span>${escapeHTML(p.url)}</span></div>`;
+    const bodies = {
+        fashion: `<div class="pvf__nav"><b>MAISON NOIR</b><span>Collections · Atelier · Journal</span></div><div class="pvf__arch"></div><div class="pvf__title">Noir</div><div class="pvf__caption">Autumn / Winter 26 — The Silent Collection</div><div class="pvf__cta">Discover</div>`,
+        ai: `<div class="pva__nav"><b>SYNAPSE</b><span>Product · Research · Pricing</span></div><div class="pva__orb"></div><div class="pva__h">Think <span>faster.</span></div><div class="pva__sub">An AI workspace that turns questions into decisions.</div><div class="pva__prompt"><span>Ask Synapse anything<i></i></span><b></b></div>`,
+        agency: `<div class="pvg__lines"></div><div class="pvg__t">KINETIC</div><div class="pvg__t2">STUDIO</div><div class="pvg__circle"></div><div class="pvg__sq"></div><div class="pvg__foot"><span>Branding / Motion / Web</span><span>(2026)</span></div>`,
+        shop: `<div class="pvs__head"><span>Shop</span><b>AURUM</b><span>Cart (2)</span></div><div class="pvs__hero">Objects of<br><em>quiet luxury</em></div><div class="pvs__grid"><div class="pvs__item"><span><b>Vessel 01</b><em>4,200</em></span></div><div class="pvs__item"><span><b>Orb Lamp</b><em>6,900</em></span></div><div class="pvs__item"><span><b>Monolith</b><em>3,100</em></span></div></div>`,
+        saas: `<div class="pvd__side"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="pvd__main"><div class="pvd__title">Overview <span>Last 30 days</span></div><div class="pvd__kpis"><div class="pvd__kpi"><small>Active users</small><b>84.2k</b><em>+12%</em></div><div class="pvd__kpi"><small>Revenue</small><b>1.9M</b><em>+8%</em></div><div class="pvd__kpi"><small>Uptime</small><b>99.9%</b></div></div><div class="pvd__chart">${[38, 52, 44, 63, 58, 72, 66, 80, 74, 88, 82, 94].map((h) => `<i style="--h:${h}%"></i>`).join("")}<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 30 C 12 26, 20 32, 30 22 S 50 16, 60 18 S 80 6, 100 8" fill="none" stroke="#ffd2b0" stroke-width=".6" vector-effect="non-scaling-stroke" style="stroke-width:2px"/></svg></div></div>`
+    };
+    return `<div class="pv pv--${p.key}">${bar}<div class="pv__body">${bodies[p.key]}</div></div>`;
+}
+
+function renderProjects() {
+    const cards = PROJECTS.map((p, i) => `
+    <article class="proj" data-reveal style="--d:${(i % 2) * 0.1}s">
+        <div class="proj__frame" data-project="${i}" data-cursor="View" role="button" tabindex="0" aria-label="Open ${escapeHTML(p.title)} demo concept">
+            ${previewHTML(p)}
+            <span class="demo-badge proj__badge">Demo concept</span>
+        </div>
+        <div class="proj__info">
+            <div class="proj__cat"><b>${String(i + 1).padStart(2, "0")}</b><span>${escapeHTML(p.category)}</span></div>
+            <h3 class="proj__title">${escapeHTML(p.title)}</h3>
+            <p class="proj__desc">${escapeHTML(p.desc)}</p>
+            <div class="proj__btn">${btnHTML("View project", { variant: "ghost", sm: true, icon: ICONS.arrowUp, attrs: `data-project="${i}" data-magnetic` })}</div>
+        </div>
+    </article>`).join("");
+    const next = `
+    <article class="proj proj--next" data-reveal>
+        <div class="proj__frame">
+            <div style="padding:32px">
+                <span class="eyebrow">Your turn</span>
+                <h3 style="margin-top:18px">Your project <em>could be next.</em></h3>
+                <p>Real results start with a real brief. Let's build something worth showing.</p>
+                ${btnHTML("Start a project", { tag: "a", attrs: 'href="#order" data-magnetic' })}
+            </div>
+        </div>
+    </article>`;
+    $("#workTrack").innerHTML = cards + next;
+}
+
+function renderPricing() {
+    const grid = $("#pricingGrid");
+    grid.innerHTML = Object.values(PRICING.packages).map((p, i) => {
+        const isCustom = typeof p.price !== "number";
+        return `<div data-reveal style="--d:${i * 0.07}s;height:100%">
+        <article class="price glass spot tilt" data-tilt data-pkg="${p.id}" role="radio" aria-checked="false" tabindex="0" aria-label="${escapeHTML(p.name)} package, ${escapeHTML(p.priceLabel)}" style="height:100%">
+            <div class="price__head"><span class="price__name">${escapeHTML(p.name)}</span>${p.badge ? `<span class="price__badge">${escapeHTML(p.badge)}</span>` : `<span class="price__check">${ICONS.check}</span>`}</div>
+            <div class="price__amount${isCustom ? " is-custom" : ""}">${isCustom ? `<strong>Custom quote</strong>` : `<small>from</small><strong>${fmtNum(p.price)}</strong><span>${PRICING.currency}</span>`}</div>
+            <p class="price__desc">${escapeHTML(p.description)}</p>
+            <ul class="price__feats">${p.features.map((f) => `<li class="${f.included ? "" : "off"}">${f.included ? ICONS.check : ICONS.x}<span><b>${escapeHTML(f.label)}</b><small>${escapeHTML(f.value)}</small></span></li>`).join("")}</ul>
+            <div class="price__foot">
+                <div class="price__time"><span>Timeline</span><b>${escapeHTML(p.timeline)}</b></div>
+                ${btnHTML(isCustom ? "Request a quote" : `Choose ${p.name}`, { variant: p.badge ? "primary" : "ghost", attrs: `data-choose="${p.id}"` }).replace('class="btn', 'class="btn btn--block')}
+            </div>
+        </article></div>`;
+    }).join("");
+
+    $("#addons").innerHTML = PRICING.addons.map((a) => `
+        <label class="addon">
+            <input type="checkbox" value="${a.id}" data-addon>
+            <span class="addon__l"><span class="addon__box">${ICONS.check}</span><span>${escapeHTML(a.label)}</span></span>
+            <span class="addon__p">+${fmtNum(a.price)}</span>
+        </label>`).join("");
+
+    $("#fPackage").innerHTML = `<option value="">Select a package</option>` + Object.values(PRICING.packages).map((p) => `<option value="${p.id}">${escapeHTML(p.name)} — ${escapeHTML(p.priceLabel)}</option>`).join("");
+    $("#fType").innerHTML = `<option value="">Select a type</option>` + WEBSITE_TYPES.map((t) => `<option value="${escapeHTML(t)}">${escapeHTML(t)}</option>`).join("");
+}
+
+/* =====================================================================
+   PRICING ↔ ORDER SYNC
+   ===================================================================== */
+function animateValue(el, to, suffix) {
+    if (!el) return;
+    if (to === null) { el.innerHTML = `<span class="serif">Custom quote</span>`; el.dataset.v = ""; return; }
+    const from = parseFloat(el.dataset.v) || 0;
+    el.dataset.v = to;
+    if (REDUCED || from === to) { el.innerHTML = `${fmtNum(to)}<small>${suffix}</small>`; return; }
+    const start = performance.now(), dur = 700;
+    const step = (now) => {
+        const t = clamp((now - start) / dur, 0, 1);
+        const e = 1 - Math.pow(1 - t, 3);
+        el.innerHTML = `${fmtNum(Math.round(from + (to - from) * e))}<small>${suffix}</small>`;
+        if (t < 1 && el.dataset.v == to) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+}
+
+function syncPricingUI() {
+    const p = State.pkg;
+    $$(".price").forEach((card) => {
+        const on = !!p && card.dataset.pkg === p.id;
+        card.classList.toggle("is-selected", on);
+        card.setAttribute("aria-checked", String(on));
+    });
+    $$("[data-addon]").forEach((cb) => { cb.checked = State.addons.has(cb.value); });
+    const extras = State.addonList;
+    const extrasLabel = extras.length ? `${extras.length} × (+${fmtNum(State.addonsTotal)})` : "None";
+
+    $("#sumPackage").textContent = p ? p.name : "—";
+    $("#sumBase").textContent = p ? p.priceLabel : "—";
+    $("#sumAddons").textContent = extrasLabel;
+    $("#sumTime").textContent = p ? p.timeline : "—";
+    animateValue($("#sumTotal"), p ? State.estimate : null, " " + PRICING.currency);
+
+    $("#oPackage").textContent = p ? `${p.name} · ${p.priceLabel}` : "Not selected";
+    $("#oAddons").textContent = extras.length ? extras.map((a) => a.label).join(", ") : "None";
+    $("#oTime").textContent = p ? p.timeline : "—";
+    animateValue($("#oTotal"), p ? State.estimate : null, " " + PRICING.currency);
+
+    const payable = !!(p && p.payable);
+    const payToggle = $("#payToggle"), payInput = $("#fPayOnline");
+    payToggle.classList.toggle("is-disabled", !payable);
+    payInput.disabled = !payable;
+    $("#payHint").textContent = payable
+        ? "You'll be redirected to the secure payment page of the payment provider."
+        : "Custom projects are quoted first — no online payment at this step.";
+    $("#oPay").textContent = !payable ? "Quote first" : payInput.checked ? "Online, after order" : "After consultation";
+    $("#asideBadge").textContent = payable ? "Estimate" : "Quote";
+
+    const sel = $("#fPackage");
+    if (sel.value !== (p ? p.id : "")) sel.value = p ? p.id : "";
+    $("#mobilePkg").textContent = p ? p.name : "—";
+    Flow.fill(p ? 1 : 0);
+}
+
+function selectPackage(id, { scroll = false, announce = false } = {}) {
+    if (!PRICING.packages[id]) return;
+    State.packageId = id;
+    syncPricingUI();
+    validateField("package", false);
+    if (announce) toast(`${PRICING.packages[id].name} package selected.`, "info", 2600);
+    if (scroll) goTo("#order");
+}
+
+/* =====================================================================
+   FLOW INDICATOR
+   ===================================================================== */
+const Flow = {
+    items: () => $$("#flow li"),
+    fill(activeIndex) {
+        this.items().forEach((li, i) => {
+            li.classList.remove("is-done", "is-active", "is-error", "is-skip");
+            if (i < activeIndex) li.classList.add("is-done");
+            else if (i === activeIndex) li.classList.add("is-active");
+        });
+    },
+    set(index, status) {
+        this.items().forEach((li, i) => {
+            li.classList.remove("is-done", "is-active", "is-error");
+            if (i < index) { if (!li.classList.contains("is-skip")) li.classList.add("is-done"); }
+            else if (i === index) { li.classList.remove("is-skip"); li.classList.add(status === "done" ? "is-done" : status === "error" ? "is-error" : "is-active"); }
+        });
+    },
+    skip(index) { const li = this.items()[index]; if (li) { li.classList.remove("is-done", "is-active", "is-error"); li.classList.add("is-skip"); } }
+};
+
+/* =====================================================================
+   FORM — validation + submit pipeline
+   ===================================================================== */
+const form = $("#orderForm");
+const RULES = {
+    name: (v) => { v = v.trim(); if (!v) return "Please enter your name."; if (v.length < 2) return "Name should be at least 2 characters."; if (!/^[\p{L}\p{M}' .-]+$/u.test(v)) return "Please use letters only."; return ""; },
+    telegram: (v) => { const u = normalizeTelegram(v); if (!v.trim()) return "Please enter your Telegram username."; if (!/^[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(u)) return "Use a valid username, e.g. @username (5–32 characters)."; return ""; },
+    email: (v) => { v = v.trim(); if (!v) return "Please enter your email."; if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return "Please enter a valid email address."; return ""; },
+    websiteType: (v) => v ? "" : "Please choose a website type.",
+    package: (v) => PRICING.packages[v] ? "" : "Please select a package.",
+    description: (v) => { v = v.trim(); if (!v) return "Please describe your project."; if (v.length < 20) return `Please add a bit more detail (${20 - v.length} more characters).`; return ""; }
+};
+const FIELD_INPUT = { name: "#fName", telegram: "#fTelegram", email: "#fEmail", websiteType: "#fType", package: "#fPackage", description: "#fDesc" };
+
+function normalizeTelegram(v) {
+    return String(v).trim().replace(/^(https?:\/\/)?(www\.)?(t\.me|telegram\.me)\//i, "").replace(/^@/, "");
+}
+
+function validateField(name, show = true) {
+    const input = $(FIELD_INPUT[name]);
+    const field = input.closest(".field");
+    const msg = RULES[name](input.value);
+    const touched = show || field.dataset.touched === "1";
+    field.classList.toggle("is-invalid", !!msg && touched);
+    field.classList.toggle("is-valid", !msg && touched && input.value.trim() !== "");
+    input.setAttribute("aria-invalid", msg && touched ? "true" : "false");
+    const err = field.querySelector(".field__err");
+    if (err) err.textContent = touched ? msg : "";
+    return !msg;
+}
+
+function validateAll() {
+    let firstInvalid = null;
+    Object.keys(RULES).forEach((name) => {
+        const ok = validateField(name, true);
+        $(FIELD_INPUT[name]).closest(".field").dataset.touched = "1";
+        if (!ok && !firstInvalid) firstInvalid = name;
+    });
+    if (firstInvalid) {
+        const input = $(FIELD_INPUT[firstInvalid]);
+        const field = input.closest(".field");
+        field.classList.remove("is-shake"); void field.offsetWidth; field.classList.add("is-shake");
+        input.focus({ preventScroll: true });
+        Scroll.to(field, { offset: -140 });
+    }
+    return !firstInvalid;
+}
+
+function setLoading(on) {
+    const btn = $("#submitBtn");
+    btn.classList.toggle("is-loading", on);
+    btn.disabled = on;
+    btn.setAttribute("aria-busy", String(on));
+    const label = $("#submitLabel");
+    const t = on ? "Sending…" : "Start project";
+    label.textContent = t; label.dataset.text = t;
+    $$("input,select,textarea", form).forEach((el) => { if (el.id !== "company") el.readOnly = on; });
+}
+
+function showState({ type, title, text, meta = [], actions = [] }) {
+    const box = $("#formState");
+    box.dataset.type = type;
+    const icon = { success: ICONS.check, error: ICONS.alert, pending: ICONS.clock, redirect: ICONS.loader, loading: ICONS.loader }[type] || ICONS.info;
+    $("#stateIcon").innerHTML = icon;
+    $("#stateTitle").textContent = title;
+    $("#stateText").innerHTML = text;
+    $("#stateMeta").innerHTML = meta.map((m) => `<span class="tag">${escapeHTML(m)}</span>`).join("");
+    const actWrap = $("#stateActions");
+    actWrap.innerHTML = "";
+    actions.forEach((a) => {
+        const html = a.href
+            ? btnHTML(a.label, { tag: "a", variant: a.variant || "ghost", icon: a.icon || ICONS.arrow, attrs: `href="${escapeHTML(a.href)}"${a.external ? ' target="_blank" rel="noopener noreferrer"' : ""}` })
+            : btnHTML(a.label, { variant: a.variant || "ghost", icon: a.icon || ICONS.arrow });
+        const tpl = document.createElement("template");
+        tpl.innerHTML = html.trim();
+        const el = tpl.content.firstElementChild;
+        if (a.onClick) el.addEventListener("click", a.onClick);
+        actWrap.appendChild(el);
+    });
+    box.classList.add("is-visible");
+    form.setAttribute("aria-hidden", "true");
+    form.inert = true;
+}
+
+function hideState() {
+    $("#formState").classList.remove("is-visible");
+    form.removeAttribute("aria-hidden");
+    form.inert = false;
+    Flow.fill(State.pkg ? 1 : 0);
+}
+
+function resetForm() {
+    form.reset();
+    $$(".field", form).forEach((f) => { f.classList.remove("is-invalid", "is-valid"); delete f.dataset.touched; });
+    $("#descCount").textContent = "0 / 2000";
+    currentRequestId = null;
+    syncPricingUI();
+    hideState();
+}
+
+let isSubmitting = false;
+let currentRequestId = null;
+
+function collectPayload() {
+    const fd = new FormData(form);
+    const pkgData = State.orderData;
+    const p = State.pkg;
+    return {
+        clientRequestId: currentRequestId || (currentRequestId = uid()),
+        customer: {
+            name: String(fd.get("name") || "").trim(),
+            telegram: "@" + normalizeTelegram(fd.get("telegram") || ""),
+            email: String(fd.get("email") || "").trim().toLowerCase()
+        },
+        project: {
+            websiteType: String(fd.get("websiteType") || ""),
+            description: String(fd.get("description") || "").trim()
+        },
+        package: pkgData.package,
+        addons: pkgData.addons,
+        estimate: pkgData.estimate,
+        payOnline: !!(p && p.payable && $("#fPayOnline").checked),
+        meta: {
+            source: "miroslav-portfolio",
+            page: window.location.href.split("#")[0],
+            submittedAt: new Date().toISOString(),
+            locale: navigator.language || "en"
+        }
+    };
+}
+
+async function submitOrder(payload) {
+    isSubmitting = true;
+    setLoading(true);
+    Flow.set(2, "active");
+    let order = null;
+    try {
+        order = await createOrder(payload);
+        Flow.set(2, "done");
+        toast(`Order #${order.id} created.`, "success", 3000);
+
+        if (!payload.payOnline) {
+            Flow.skip(3);
+            Flow.set(4, "done");
+            showState({
+                type: "success",
+                title: "Request received.",
+                text: State.pkg && State.pkg.payable
+                    ? "Your order was registered by the server. I'll review your brief and contact you on Telegram or by email with the next steps and payment details."
+                    : "Your custom project request was registered by the server. I'll review the brief and get back to you with a tailored quote.",
+                meta: [`Order #${order.id}`, payload.package ? payload.package.name : ""].filter(Boolean),
+                actions: [{ label: "Send another request", variant: "ghost", onClick: resetForm }, { label: "Contact on Telegram", variant: "ghost", href: "https://t.me/zxcvntt", external: true, icon: ICONS.tg }]
+            });
+            currentRequestId = null;
+            return;
+        }
+
+        Flow.set(3, "active");
+        showState({ type: "loading", title: "Preparing secure payment…", text: `Order #${escapeHTML(order.id)} was created. Connecting to the payment service.` });
+        const payment = await createPayment(order);
+        currentRequestId = null;
+        await handlePaymentResult(payment);
+    } catch (err) {
+        if (!order) {
+            Flow.set(2, "error");
+            showState({
+                type: "error",
+                title: err instanceof ApiError && err.code === "NOT_CONFIGURED" ? "Online orders are not connected yet." : "The order wasn't sent.",
+                text: escapeHTML(humanError(err)) + " Your details are still in the form.",
+                actions: [
+                    ...(err.code !== "NOT_CONFIGURED" ? [{ label: "Try again", variant: "primary", onClick: () => { hideState(); submitOrder(payload); } }] : []),
+                    ...contactActions(true)
+                ]
+            });
+            toast(humanError(err), "error");
+        } else {
+            Flow.set(3, "error");
+            showState({
+                type: "error",
+                title: "Payment could not be started.",
+                text: `Order #${escapeHTML(order.id)} was created, but the payment session failed: ${escapeHTML(humanError(err))} No money has been charged.`,
+                meta: [`Order #${order.id}`],
+                actions: [{ label: "Retry payment", variant: "primary", onClick: () => retryPayment(order.id) }, ...contactActions(false)]
+            });
+            toast("Payment could not be started.", "error");
+        }
+    } finally {
+        isSubmitting = false;
+        setLoading(false);
+    }
+}
+
+function initForm() {
+    Object.keys(FIELD_INPUT).forEach((name) => {
+        const input = $(FIELD_INPUT[name]);
+        const field = input.closest(".field");
+        input.addEventListener("blur", () => { if (input.value.trim() !== "" || field.dataset.touched) { field.dataset.touched = "1"; validateField(name, true); } });
+        input.addEventListener("input", () => { if (field.dataset.touched) validateField(name, true); });
+        input.addEventListener("change", () => { field.dataset.touched = "1"; validateField(name, true); });
+    });
+    $("#fDesc").addEventListener("input", (e) => { $("#descCount").textContent = `${e.target.value.length} / 2000`; });
+    $("#fPackage").addEventListener("change", (e) => { if (e.target.value) selectPackage(e.target.value); else { State.packageId = null; syncPricingUI(); } });
+    $("#fPayOnline").addEventListener("change", syncPricingUI);
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (isSubmitting) return;
+        if ($("#company").value) { toast("Request blocked.", "error"); return; }
+        Flow.fill(1);
+        if (!validateAll()) { toast("Please check the highlighted fields.", "error", 3200); return; }
+        Flow.set(1, "done");
+        await submitOrder(collectPayload());
+    });
+}
+
+/* returning from the payment provider → verify with the API, never trust URL params */
+function handlePaymentReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("payment");
+    if (!mode && !params.get("payment_id")) return;
+    const pending = storage.get("pendingPayment") || {};
+    const ref = {
+        paymentId: params.get("payment_id") || params.get("paymentId") || pending.paymentId || null,
+        orderId: params.get("order_id") || params.get("orderId") || pending.orderId || null
+    };
+    if (history.replaceState) history.replaceState(null, "", window.location.pathname + "#order");
+    setTimeout(() => {
+        Scroll.to($("#order"), { offset: navOffset("order"), immediate: true });
+        if (mode === "cancel") {
+            Flow.set(3, "error");
+            showState({ type: "error", title: "Payment was cancelled.", text: "You left the payment page before completing it. No money was charged by this website. Your order is saved.", meta: ref.orderId ? [`Order #${ref.orderId}`] : [], actions: [
+                ...(ref.orderId ? [{ label: "Retry payment", variant: "primary", onClick: () => retryPayment(ref.orderId) }] : []),
+                ...contactActions(false)
+            ] });
+            return;
+        }
+        checkPaymentStatus(ref);
+    }, 300);
+}
+
+/* =====================================================================
+   INTERACTIONS
+   ===================================================================== */
+function splitWords(root) {
+    let i = 0;
+    const walk = (node) => {
+        [...node.childNodes].forEach((child) => {
+            if (child.nodeType === 3) {
+                const parts = child.textContent.split(/(\s+)/);
+                const frag = document.createDocumentFragment();
+                parts.forEach((part) => {
+                    if (!part) return;
+                    if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(" ")); return; }
+                    const w = document.createElement("span"); w.className = "w";
+                    const inner = document.createElement("span"); inner.textContent = part; inner.style.setProperty("--i", i++);
+                    w.appendChild(inner); frag.appendChild(w);
+                });
+                child.replaceWith(frag);
+            } else if (child.nodeType === 1) walk(child);
+        });
+    };
+    walk(root);
+}
+
+function initSplit() { $$("[data-split]").forEach(splitWords); }
+
+function initScrub() {
+    const el = $("[data-scrub]");
+    if (!el) return null;
+    const walk = (node) => {
+        [...node.childNodes].forEach((child) => {
+            if (child.nodeType === 3) {
+                const frag = document.createDocumentFragment();
+                child.textContent.split(/(\s+)/).forEach((part) => {
+                    if (!part) return;
+                    if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(" ")); return; }
+                    const s = document.createElement("span"); s.className = "sw"; s.textContent = part; frag.appendChild(s);
+                });
+                child.replaceWith(frag);
+            } else if (child.nodeType === 1) walk(child);
+        });
+    };
+    walk(el);
+    const words = $$(".sw", el);
+    return () => {
+        const r = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const p = clamp((vh * 0.88 - r.top) / (r.height + vh * 0.4), 0, 1);
+        const n = Math.round(p * words.length * 1.05);
+        words.forEach((w, i) => w.classList.toggle("on", i < n));
+    };
+}
+
+function initReveal() {
+    const els = $$("[data-reveal],[data-split]");
+    if (REDUCED || !("IntersectionObserver" in window)) { els.forEach((el) => el.classList.add("is-in")); return; }
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+    els.forEach((el) => io.observe(el));
+}
+
+function initCursor() {
+    if (!FINE || REDUCED) return;
+    const c = $("#cursor"), dot = $(".cursor__dot", c), ring = $(".cursor__ring", c), label = $("#cursorLabel");
+    document.body.classList.add("has-cursor");
+    let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my, visible = false;
+    window.addEventListener("pointermove", (e) => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.transform = `translate3d(${mx}px,${my}px,0)`;
+        if (!visible) { visible = true; c.classList.remove("is-hidden"); rx = mx; ry = my; }
+    }, { passive: true });
+    document.addEventListener("pointerleave", () => { visible = false; c.classList.add("is-hidden"); });
+    document.addEventListener("pointerover", (e) => {
+        const t = e.target;
+        const lab = t.closest("[data-cursor]");
+        const text = t.closest("input[type=text],input[type=email],textarea");
+        const hov = t.closest("a,button,select,label,[role=button],[role=radio]");
+        c.classList.toggle("is-label", !!lab);
+        c.classList.toggle("is-text", !!text && !lab);
+        c.classList.toggle("is-hover", !!hov && !lab && !text);
+        if (lab) label.textContent = lab.dataset.cursor;
+    });
+    (function loop() {
+        rx = lerp(rx, mx, 0.18); ry = lerp(ry, my, 0.18);
+        ring.style.transform = `translate3d(${rx}px,${ry}px,0)`;
+        requestAnimationFrame(loop);
+    })();
+}
+
+function bindInteractive(root = document) {
+    if (FINE && !REDUCED) {
+        $$("[data-magnetic]", root).forEach((el) => {
+            if (el.dataset.mBound) return; el.dataset.mBound = "1";
+            el.addEventListener("pointermove", (e) => {
+                const r = el.getBoundingClientRect();
+                const x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2;
+                el.style.transform = `translate3d(${x * 0.22}px,${y * 0.32}px,0)`;
+            });
+            el.addEventListener("pointerleave", () => { el.style.transform = ""; });
+        });
+        $$("[data-tilt]", root).forEach((el) => {
+            if (el.dataset.tBound) return; el.dataset.tBound = "1";
+            el.addEventListener("pointermove", (e) => {
+                const r = el.getBoundingClientRect();
+                const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+                el.classList.add("is-tilting");
+                el.style.setProperty("--ry", `${(px - 0.5) * 7}deg`);
+                el.style.setProperty("--rx", `${(0.5 - py) * 7}deg`);
+            });
+            el.addEventListener("pointerleave", () => { el.classList.remove("is-tilting"); el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg"); });
+        });
+    }
+    $$(".spot", root).forEach((el) => {
+        if (el.dataset.sBound) return; el.dataset.sBound = "1";
+        el.addEventListener("pointermove", (e) => {
+            const r = el.getBoundingClientRect();
+            el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+            el.style.setProperty("--my", `${e.clientY - r.top}px`);
+        });
+    });
+}
+
+/* hero canvas: drifting particles + cursor constellation */
+function initHeroCanvas() {
+    const canvas = $("#heroCanvas"), hero = $("#home"), spot = $("#heroSpot");
+    const ctx = canvas.getContext("2d");
+    let w = 0, h = 0, dpr = 1, parts = [], raf = null, inView = true;
+    const mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
+    const blobs = $$("[data-mouse]");
+    let bx = 0, by = 0, btx = 0, bty = 0;
+
+    function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = hero.clientWidth; h = hero.clientHeight;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const count = Math.round(clamp((w * h) / 16000, 30, 110));
+        parts = Array.from({ length: count }, () => ({
+            x: Math.random() * w, y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.12, vy: -(Math.random() * 0.25 + 0.05),
+            r: Math.random() * 1.3 + 0.3, a: Math.random() * 0.5 + 0.15,
+            tint: Math.random() < 0.22
+        }));
+    }
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        mouse.x = lerp(mouse.x, mouse.tx, 0.12); mouse.y = lerp(mouse.y, mouse.ty, 0.12);
+        const near = [];
+        for (const p of parts) {
+            p.x += p.vx; p.y += p.vy;
+            const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
+            if (d2 < 150 * 150) {
+                const d = Math.sqrt(d2) || 1, f = (150 - d) / 150;
+                p.x += (dx / d) * f * 1.2; p.y += (dy / d) * f * 1.2;
+                near.push(p);
+            }
+            if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+            if (p.x < -10) p.x = w + 10; else if (p.x > w + 10) p.x = -10;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = p.tint ? `rgba(214,180,255,${p.a})` : `rgba(255,255,255,${p.a * 0.8})`;
+            ctx.fill();
+        }
+        ctx.lineWidth = 0.6;
+        for (let i = 0; i < near.length; i++) {
+            for (let j = i + 1; j < near.length; j++) {
+                const a = near[i], b = near[j];
+                const dx = a.x - b.x, dy = a.y - b.y, d = Math.sqrt(dx * dx + dy * dy);
+                if (d < 110) {
+                    ctx.strokeStyle = `rgba(214,180,255,${(1 - d / 110) * 0.35})`;
+                    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+                }
+            }
+        }
+        bx = lerp(bx, btx, 0.05); by = lerp(by, bty, 0.05);
+        blobs.forEach((b) => { const k = parseFloat(b.dataset.mouse); b.style.transform = `translate3d(${bx * k}px,${by * k}px,0)`; });
+        raf = inView ? requestAnimationFrame(draw) : null;
+    }
+    hero.addEventListener("pointermove", (e) => {
+        const r = hero.getBoundingClientRect();
+        mouse.tx = e.clientX - r.left; mouse.ty = e.clientY - r.top;
+        if (mouse.x < -1000) { mouse.x = mouse.tx; mouse.y = mouse.ty; }
+        btx = (e.clientX / innerWidth - 0.5); bty = (e.clientY / innerHeight - 0.5);
+        spot.style.setProperty("--hx", `${mouse.tx}px`); spot.style.setProperty("--hy", `${mouse.ty}px`);
+    }, { passive: true });
+    hero.addEventListener("pointerleave", () => { mouse.tx = mouse.ty = -9999; mouse.x = mouse.y = -9999; });
+
+    resize();
+    let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(resize, 150); });
+    if (REDUCED) { draw(); cancelAnimationFrame(raf); return; }
+    new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView && !raf) raf = requestAnimationFrame(draw); }).observe(hero);
+    raf = requestAnimationFrame(draw);
+}
+
+/* pinned horizontal work gallery (desktop) */
+function initWork() {
+    const sec = $("#work"), track = $("#workTrack"), counter = $("#workCounter"), bar = $("#workBar");
+    const mq = window.matchMedia("(min-width: 1101px) and (min-height: 640px)");
+    let dist = 0, pinned = false;
+    function measure() {
+        pinned = mq.matches && !REDUCED;
+        sec.classList.toggle("is-pinned", pinned);
+        if (!pinned) { sec.style.height = ""; track.style.transform = ""; return; }
+        track.style.transform = "";
+        dist = Math.max(0, track.scrollWidth - window.innerWidth);
+        sec.style.height = `${window.innerHeight + dist}px`;
+        update();
+    }
+    function update() {
+        const total = PROJECTS.length;
+        if (!pinned) {
+            const cards = $$(".proj", track);
+            let idx = 0;
+            cards.forEach((c, i) => { if (c.getBoundingClientRect().top < innerHeight * 0.6) idx = i; });
+            idx = Math.min(idx, total - 1);
+            counter.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+            bar.style.setProperty("--wp", (idx + 1) / total);
+            return;
+        }
+        const top = sec.getBoundingClientRect().top;
+        const p = clamp(-top / (sec.offsetHeight - innerHeight || 1), 0, 1);
+        track.style.transform = `translate3d(${-dist * p}px,0,0)`;
+        const idx = Math.min(total - 1, Math.floor(p * total));
+        counter.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+        bar.style.setProperty("--wp", Math.max(0.06, p));
+    }
+    measure();
+    let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(measure, 150); });
+    window.addEventListener("load", measure);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    return update;
+}
+
+function initNav() {
+    const nav = $("#nav"), links = $$("[data-nav]"), pill = $("#navPill");
+    let lastY = window.scrollY;
+    function movePill(a) {
+        if (!a || !pill) { if (pill) pill.style.opacity = "0"; return; }
+        pill.style.opacity = "1";
+        pill.style.width = a.offsetWidth + "px";
+        pill.style.transform = `translateX(${a.offsetLeft}px)`;
+    }
+    const sections = ["home", "about", "services", "work", "pricing", "order", "contact"].map((id) => document.getElementById(id));
+    function setActive(id) {
+        const navId = id === "order" ? "pricing" : id;
+        let active = null;
+        links.forEach((a) => { const on = a.dataset.nav === navId; a.classList.toggle("is-active", on); if (on) { active = a; a.setAttribute("aria-current", "true"); } else a.removeAttribute("aria-current"); });
+        movePill(active);
+    }
+    function onScroll() {
+        const y = window.scrollY;
+        nav.classList.toggle("is-scrolled", y > 30);
+        const menuOpen = document.body.classList.contains("menu-open");
+        if (!menuOpen && window.innerWidth > 1100) nav.classList.toggle("is-hidden", y > lastY + 4 && y > innerHeight * 0.8);
+        if (window.innerWidth <= 1100) nav.classList.remove("is-hidden");
+        if (y < lastY - 4 || y < 50) nav.classList.remove("is-hidden");
+        lastY = y;
+        const probe = innerHeight * 0.4;
+        let current = "home";
+        sections.forEach((s) => { if (s && s.getBoundingClientRect().top <= probe) current = s.id; });
+        setActive(current);
+    }
+    window.addEventListener("resize", () => { const a = $(".nav__links a.is-active"); movePill(a); });
+    return onScroll;
+}
+
+function initMobileMenu() {
+    const burger = $("#burger"), menu = $("#mmenu");
+    const set = (open) => {
+        document.body.classList.toggle("menu-open", open);
+        burger.setAttribute("aria-expanded", String(open));
+        burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        menu.setAttribute("aria-hidden", String(!open));
+        menu.inert = !open;
+        Scroll.lock(open);
+        if (open) $("#nav").classList.remove("is-hidden");
+    };
+    menu.inert = true;
+    burger.addEventListener("click", () => set(!document.body.classList.contains("menu-open")));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document.body.classList.contains("menu-open")) { set(false); burger.focus(); } });
+    window.addEventListener("resize", () => { if (window.innerWidth > 1100 && document.body.classList.contains("menu-open")) set(false); });
+    return { close: () => set(false), isOpen: () => document.body.classList.contains("menu-open") };
+}
+
+function initParallax() {
+    const els = $$("[data-parallax]");
+    const hero = $("[data-parallax-hero]");
+    return () => {
+        if (REDUCED) return;
+        const vh = innerHeight;
+        els.forEach((el) => {
+            const r = el.getBoundingClientRect();
+            if (r.bottom < -200 || r.top > vh + 200) return;
+            const k = parseFloat(el.dataset.parallax) || 0;
+            const c = r.top + r.height / 2 - vh / 2;
+            el.style.translate = `0 ${(c * k).toFixed(1)}px`;
+        });
+        if (hero) {
+            const y = window.scrollY;
+            if (y < vh * 1.2) { hero.style.transform = `translate3d(0,${y * 0.18}px,0)`; hero.style.opacity = String(clamp(1 - y / (vh * 0.9), 0, 1)); }
+        }
+    };
+}
+
+function openServiceModal(i) {
+    const s = SERVICES[i];
+    const pkg = PRICING.packages[s.from];
+    Modal.open(`
+    <div class="m-svc">
+        <div class="m-svc__head"><span class="svc__icon">${s.icon}</span><span class="eyebrow">Service ${String(i + 1).padStart(2, "0")}</span></div>
+        <div class="m-body">
+            <div>
+                <h2 id="modalTitle">${escapeHTML(s.title)}</h2>
+                <p>${escapeHTML(s.desc)}</p>
+                <div class="m-kv">
+                    <div><span>Typical timeline</span><b>${escapeHTML(s.timeline)}</b></div>
+                    <div><span>Suggested package</span><b>${escapeHTML(pkg.name)} · ${escapeHTML(pkg.priceLabel)}</b></div>
+                </div>
+                <div class="m-actions">
+                    ${btnHTML("Start this project", { attrs: `data-start-type="${escapeHTML(s.type)}" data-start-pkg="${s.from}" data-magnetic` })}
+                    ${btnHTML("See pricing", { variant: "ghost", tag: "a", attrs: 'href="#pricing"' })}
+                </div>
+            </div>
+            <ul class="m-list">${s.includes.map((x) => `<li>${ICONS.check}<span>${escapeHTML(x)}</span></li>`).join("")}</ul>
+        </div>
+    </div>`);
+}
+
+function openProjectModal(i) {
+    const p = PROJECTS[i];
+    Modal.open(`
+    <div class="m-proj__preview">${previewHTML(p)}<span class="demo-badge proj__badge">Demo concept</span></div>
+    <div class="m-body">
+        <div>
+            <span class="eyebrow">${escapeHTML(p.category)} · Demo concept</span>
+            <h2 id="modalTitle">${escapeHTML(p.title)}</h2>
+            <p>${escapeHTML(p.desc)}</p>
+            <div class="m-note">${ICONS.info}<span>This is a demo concept created to showcase design and development capabilities. It is not a real client project.</span></div>
+            <div class="m-actions">
+                ${btnHTML("Start a similar project", { attrs: `data-start-type="${escapeHTML(p.type)}" data-magnetic` })}
+                ${btnHTML("Close", { variant: "ghost", icon: ICONS.x, attrs: "data-close" })}
+            </div>
+        </div>
+        <div>
+            <div class="m-kv"><div><span>Category</span><b>${escapeHTML(p.category)}</b></div><div><span>Format</span><b>${escapeHTML(p.type)}</b></div><div><span>Built with</span><b>${p.stack.map(escapeHTML).join(" · ")}</b></div></div>
+            <ul class="m-list">${p.explores.map((x) => `<li>${ICONS.check}<span>${escapeHTML(x)}</span></li>`).join("")}</ul>
+        </div>
+    </div>`);
+}
+
+function startProject({ type, pkg } = {}) {
+    if (type) { const sel = $("#fType"); sel.value = type; sel.closest(".field").dataset.touched = "1"; validateField("websiteType", true); }
+    if (pkg) selectPackage(pkg);
+    Modal.close();
+    setTimeout(() => goTo("#order"), 280);
+    toast(type ? `“${type}” added to your brief.` : "Let's start your project.", "info", 2600);
+}
+
+function initClicks(menu) {
+    document.addEventListener("click", (e) => {
+        const t = e.target;
+
+        const start = t.closest("[data-start-type],[data-start-pkg]");
+        if (start) { e.preventDefault(); startProject({ type: start.dataset.startType, pkg: start.dataset.startPkg }); return; }
+
+        const choose = t.closest("[data-choose]");
+        if (choose) { e.preventDefault(); e.stopPropagation(); selectPackage(choose.dataset.choose, { scroll: true, announce: true }); return; }
+
+        const card = t.closest(".price[data-pkg]");
+        if (card) { selectPackage(card.dataset.pkg, { announce: false }); return; }
+
+        const svc = t.closest("[data-service]");
+        if (svc) { openServiceModal(+svc.dataset.service); return; }
+
+        const proj = t.closest("[data-project]");
+        if (proj) { e.preventDefault(); openProjectModal(+proj.dataset.project); return; }
+
+        const a = t.closest('a[href^="#"]');
+        if (a) {
+            const hash = a.getAttribute("href");
+            if (hash.length < 2 || !document.getElementById(hash.slice(1))) return;
+            e.preventDefault();
+            if (Modal.isOpen()) { Modal.close(); setTimeout(() => goTo(hash), 280); return; }
+            if (menu.isOpen()) { menu.close(); setTimeout(() => goTo(hash), 450); return; }
+            goTo(hash);
+        }
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const t = e.target;
+        if (t.matches(".price[data-pkg]")) { e.preventDefault(); selectPackage(t.dataset.pkg, { announce: true }); }
+        else if (t.matches(".proj__frame[data-project]")) { e.preventDefault(); openProjectModal(+t.dataset.project); }
+    });
+
+    $("#pricingGrid").addEventListener("keydown", (e) => {
+        if (!["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key) || !e.target.matches(".price")) return;
+        e.preventDefault();
+        const cards = $$(".price");
+        const i = cards.indexOf(e.target);
+        const next = cards[(i + (e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : cards.length - 1)) % cards.length];
+        next.focus(); selectPackage(next.dataset.pkg);
+    });
+
+    $("#addons").addEventListener("change", (e) => {
+        if (!e.target.matches("[data-addon]")) return;
+        const a = PRICING.addons.find((x) => x.id === e.target.value);
+        if (e.target.checked) State.addons.add(e.target.value); else State.addons.delete(e.target.value);
+        syncPricingUI();
+        if (a) toast(`${a.label} ${e.target.checked ? "added" : "removed"}.`, "info", 1800);
+    });
+
+    $("#copyEmail").addEventListener("click", async () => {
+        const email = "miroslav300812@gmail.com";
+        try {
+            if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(email);
+            else {
+                const ta = document.createElement("textarea");
+                ta.value = email; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+                document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+            }
+            toast("Email copied to clipboard.", "success", 2400);
+        } catch (err) {
+            toast("Couldn't copy — the email is miroslav300812@gmail.com", "error");
+        }
+    });
+}
+
+function initLoader() {
+    const loader = $("#loader"), count = $("#loaderCount"), bar = $("#loaderBar");
+    const dur = REDUCED ? 200 : 1500;
+    const start = performance.now();
+    return new Promise((resolve) => {
+        const step = (now) => {
+            const t = clamp((now - start) / dur, 0, 1);
+            const e = 1 - Math.pow(1 - t, 3);
+            count.textContent = String(Math.round(e * 100)).padStart(3, "0");
+            bar.style.setProperty("--p", e);
+            if (t < 1) requestAnimationFrame(step);
+            else {
+                loader.classList.add("is-done");
+                setTimeout(() => document.body.classList.add("is-ready"), 250);
+                setTimeout(() => { loader.classList.add("is-gone"); resolve(); }, 1150);
+            }
+        };
+        requestAnimationFrame(step);
+    });
+}
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+(function boot() {
+    renderMarquee();
+    renderServices();
+    renderProjects();
+    renderPricing();
+    initSplit();
+
+    const scrub = initScrub();
+    const workUpdate = initWork();
+    const navUpdate = initNav();
+    const parallax = initParallax();
+    const menu = initMobileMenu();
+    const progress = $("#progressBar");
+    const mobileCta = $("#mobileCta");
+    const orderSec = $("#order"), contactSec = $("#contact");
+
+    let ticking = false;
+    function onScroll() {
+        ticking = false;
+        const max = document.documentElement.scrollHeight - innerHeight;
+        progress.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+        navUpdate();
+        workUpdate();
+        parallax();
+        if (scrub) scrub();
+        const past = window.scrollY > innerHeight * 0.9;
+        const o = orderSec.getBoundingClientRect(), f = contactSec.getBoundingClientRect();
+        const inForm = o.top < innerHeight && o.bottom > 0;
+        const nearEnd = f.top < innerHeight * 0.6;
+        mobileCta.classList.toggle("is-visible", past && !inForm && !nearEnd);
+    }
+    window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    window.addEventListener("resize", () => requestAnimationFrame(onScroll));
+
+    syncPricingUI();
+    initForm();
+    initClicks(menu);
+    bindInteractive(document);
+    initCursor();
+    initHeroCanvas();
+    initReveal();
+    onScroll();
+
+    initLoader().then(() => {
+        onScroll();
+        if (window.location.hash && window.location.hash.length > 1 && !new URLSearchParams(location.search).get("payment")) {
+            const el = document.getElementById(window.location.hash.slice(1));
+            if (el) Scroll.to(el, { offset: navOffset(el.id), immediate: true });
+        }
+        handlePaymentReturn();
+    });
+})();
+</script>
 </body>
 </html>
