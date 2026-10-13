@@ -909,6 +909,34 @@ body.noanim *,body.noanim *::before,body.noanim *::after{transition:none!importa
 :root[data-theme="dark"] .leaflet-control-attribution{background:rgba(20,22,27,.55)!important;color:#aab}
 :root[data-theme="dark"] .leaflet-control-attribution a{color:#cdd}
 .hidden{display:none!important}
+#battleCanvas{position:fixed;inset:0;pointer-events:none;z-index:510}
+#battleHud{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-20px);width:min(560px,calc(100% - 24px));border-radius:20px;padding:12px 14px;z-index:1004;display:flex;flex-direction:column;gap:10px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;background:var(--panel-strong)}
+body.battle #battleHud{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.bh-top{display:flex;align-items:center;gap:12px}
+.bh-ico{width:38px;height:38px;border-radius:12px;background:var(--accent);color:var(--accent-text);display:grid;place-items:center;flex:none}
+.bh-top div{flex:1;min-width:0}
+.bh-top b{display:block;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bh-top small{display:block;font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bh-skip{height:36px;padding:0 12px;border-radius:11px;background:var(--btn);border:1px solid var(--line2);font-size:13px;font-weight:600;flex:none}
+.bh-forces{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.bh-forces span{display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:64px}
+.bh-forces span:last-child{justify-content:flex-end}
+.bh-bar{flex:1;height:8px;border-radius:5px;overflow:hidden;display:flex;background:var(--line2)}
+.bh-bar i{display:block;height:100%;transition:width .15s linear}
+#battleBanner{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);z-index:1005;border-radius:22px;padding:18px 24px;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;min-width:260px;max-width:calc(100% - 32px);background:var(--panel-strong)}
+#battleBanner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#battleBanner h3{margin:0 0 6px;font-size:26px;letter-spacing:1px;font-weight:800}
+#battleBanner p{margin:3px 0;color:var(--muted);font-size:13.5px;line-height:1.4}
+body.battle .mappanel,body.battle .sheet,body.battle .bottomnav,body.battle .playbar,body.battle .legend,body.battle #toasts,body.battle .topbar,body.battle .statpill{opacity:0!important;pointer-events:none!important}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.chip{height:38px;border-radius:11px;background:var(--btn);border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--muted)}
+.chip.on{background:var(--accent);color:var(--accent-text);border-color:transparent}
+.optrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 2px 0;font-size:13px;color:var(--muted)}
+.optrow .seg button{padding:6px 10px;font-size:12.5px}
+.chance{margin:10px 2px 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.chance b{color:var(--text)}
+.chance .bar{flex:1;margin:0}
+.battlecard.on svg{color:var(--accent)}
 .busy{position:fixed;inset:0;display:grid;place-items:center;z-index:2000;background:var(--sea);transition:opacity .4s}
 .busy.done{opacity:0;pointer-events:none}
 .busy div{font-weight:600;color:var(--muted);display:flex;gap:12px;align-items:center}
@@ -1007,6 +1035,16 @@ body.noanim *,body.noanim *::before,body.noanim *::after{transition:none!importa
     <div class="slider"><label for="brushSize">Размер кисти</label><input type="range" id="brushSize" min="4" max="100" step="1"><output id="brushSizeV"></output></div>
     <div class="slider"><label for="smooth">Сглаживание</label><input type="range" id="smooth" min="0" max="5" step="1"><output id="smoothV"></output></div>
 
+    <div class="sec">Битва при захвате</div>
+    <button class="protect battlecard" id="battleCard"></button>
+    <div class="slider"><label for="attN">Атака, роты</label><input type="range" id="attN" min="1" max="40" step="1"><output id="attNV"></output></div>
+    <div class="slider"><label for="defN">Оборона, роты</label><input type="range" id="defN" min="0" max="40" step="1"><output id="defNV"></output></div>
+    <div class="sec" style="margin-top:10px">Сценарий захвата</div>
+    <div class="grid4" id="scenGrid"></div>
+    <div class="optrow"><span>Исход боя</span><div class="seg" data-set="battleOutcome"><button data-v="force">По силам</button><button data-v="always">Всегда победа</button></div></div>
+    <div class="optrow"><span>Скорость боя</span><div class="seg" data-set="battleSpeed"><button data-v="slow">Медленно</button><button data-v="normal">Обычно</button><button data-v="fast">Быстро</button></div></div>
+    <div class="chance" id="chanceLine"></div>
+
     <div class="sec">Действия</div>
     <div class="list">
       <div class="grid2">
@@ -1042,6 +1080,7 @@ body.noanim *,body.noanim *::before,body.noanim *::after{transition:none!importa
     <div class="sec">Территории</div>
     <div id="terrList"></div>
     <div class="kv"><span>Изменений</span><b id="changesCount">0</b></div>
+    <div class="kv"><span>Битвы</span><b id="battleCount">0</b></div>
     <div class="last"><small>Последнее действие</small><div id="lastAction">—</div></div>
     <div class="note" id="refNote"></div>
     <button class="act wide" id="repBtn">Проценты по республикам</button>
@@ -1094,6 +1133,7 @@ body.noanim *,body.noanim *::before,body.noanim *::after{transition:none!importa
       <div class="srow"><div><b>Реки</b><small>Крупные реки</small></div><button class="tgl" data-tgl="rivers"></button></div>
       <div class="srow"><div><b>Сетка</b><small>Координатная сетка</small></div><button class="tgl" data-tgl="grid"></button></div>
       <div class="srow"><div><b>Анимации</b><small>Плавная смена территорий и камеры</small></div><button class="tgl" data-tgl="anim"></button></div>
+      <div class="srow"><div><b>Битвы</b><small>При захвате камера приближается, роты сражаются за участок</small></div><button class="tgl" data-tgl="battles"></button></div>
       <div class="srow"><div><b>Автосохранение</b><small>Восстанавливает карту при следующем запуске</small></div><button class="tgl" data-tgl="autosave"></button></div>
       <div class="srow" style="display:block"><b>Управление</b>
         <div class="keys"><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> сторона · <kbd>L</kbd> контур · <kbd>B</kbd> кисть · <kbd>H</kbd> рука<br>
@@ -1101,7 +1141,7 @@ body.noanim *,body.noanim *::before,body.noanim *::after{transition:none!importa
         <kbd>F</kbd> Front · <kbd>E</kbd> Editor · <kbd>V</kbd> View · <kbd>+</kbd> <kbd>−</kbd> масштаб · <kbd>0</kbd> камера<br>
         <kbd>Пробел</kbd> / правая кнопка — двигать карту · <kbd>Esc</kbd> отмена</div>
       </div>
-      <div class="foot">Build the front 1.0 · WWII. Исходные карты: границы на 01.09.1939 и пик наступления вермахта на 05.12.1941 (битва за Москву). Береговые линии и реки — Natural Earth, исторические границы — historical-basemaps. Это игровая песочница; границы и линия фронта упрощены.</div>
+      <div class="foot">Build the front 1.0 · WWII. Исходные карты: границы на 01.09.1939 и пик наступления вермахта на 05.12.1941 (битва за Москву). Береговые линии и реки — Natural Earth, исторические границы — historical-basemaps. Битвы при захвате — игровая анимация: роты в обозначениях НАТО, исход зависит от соотношения сил. Это игровая песочница; границы и линия фронта упрощены.</div>
     </div>
     <div class="mfoot"><button class="btn" id="resetCam"><svg class="i" viewBox="0 0 24 24"><line x1="2" x2="5" y1="12" y2="12"/><line x1="19" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="5"/><line x1="12" x2="12" y1="19" y2="22"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/></svg>Сбросить камеру</button><button class="btn primary" data-close>Готово</button></div>
   </div>
@@ -1116,6 +1156,12 @@ body.noanim *,body.noanim *::before,body.noanim *::after{transition:none!importa
   </div>
 </div>
 
+<canvas id="battleCanvas"></canvas>
+<div id="battleHud" class="glass">
+  <div class="bh-top"><span class="bh-ico"><svg class="i" viewBox="0 0 24 24"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg></span><div><b id="bhTitle"></b><small id="bhSub"></small></div><button class="bh-skip" id="bhSkip">Пропустить</button></div>
+  <div class="bh-forces"><span><i class="dot" id="bhAdot"></i><b id="bhA">0</b></span><div class="bh-bar"><i id="bhPa"></i><i id="bhPd"></i></div><span><b id="bhD">0</b><i class="dot" id="bhDdot"></i></span></div>
+</div>
+<div id="battleBanner" class="glass"></div>
 <input type="file" id="fileMap" accept=".json,application/json" class="hidden">
 <input type="file" id="fileGeo" accept=".geojson,.json,application/geo+json,application/json" class="hidden">
 
@@ -1198,7 +1244,8 @@ const BASES = {
 const DEFAULTS = {
   theme: 'dark', base: 'esri', cartoKey: '', lang: 'ru', pctBase: 'ussr', protect: true,
   cities: true, villages: false, villagesMode: 'front', regions: true, rivers: true, grid: false,
-  anim: true, autosave: true, brushSize: 26, smooth: 1
+  anim: true, autosave: true, brushSize: 26, smooth: 1,
+  battles: true, attackers: 12, defenders: 8, battleScen: 'auto', battleOutcome: 'force', battleSpeed: 'normal'
 };
 const LS_SET = 'btf-ww2-settings', LS_AUTO = 'btf-ww2-autosave', LS_SAVE = 'btf-ww2-save';
 
@@ -1484,7 +1531,7 @@ function applyChanges(changes, which) {
   for (const sd of sides) renderSide(sd);
 }
 function undo() {
-  if (mode === 'history') return;
+  if (mode === 'history' || battleOn) return;
   const a = undoStack.pop();
   if (!a) { toast('Нечего отменять.', 'warn'); return; }
   applyChanges(a.changes, 'before');
@@ -1493,7 +1540,7 @@ function undo() {
   afterChange();
 }
 function redo() {
-  if (mode === 'history') return;
+  if (mode === 'history' || battleOn) return;
   const a = redoStack.pop();
   if (!a) { toast('Нечего возвращать.', 'warn'); return; }
   applyChanges(a.changes, 'after');
@@ -1872,7 +1919,7 @@ sizeDraw();
 addEventListener('resize', () => { sizeDraw(); map.invalidateSize(); });
 const mapEl = map.getContainer();
 let drawing = null, pointers = new Map(), spaceDown = false, rpan = null, hover = null, rafDraw = 0;
-const canDraw = () => (tool === 'lasso' || tool === 'brush') && mode !== 'history' && mode !== 'city' && mode !== 'view' && !spaceDown;
+const canDraw = () => (tool === 'lasso' || tool === 'brush') && !battleOn && mode !== 'history' && mode !== 'city' && mode !== 'view' && !spaceDown;
 function updateDragging() {
   const pan = !canDraw();
   if (pan) map.dragging.enable(); else map.dragging.disable();
@@ -1982,9 +2029,28 @@ function finishDrawing(d) {
     run(P);
   }
 }
-function run(P) {
+async function run(P) {
   const act = capture(side, P);
-  if (act) commit(act);
+  if (!act) return;
+  if (!settings.battles || battleOn || (act.side !== 'U' && act.side !== 'G')) { commit(act); return; }
+  const pieces = act.pieces;
+  const r = await playBattle(act);
+  if (r.skipped) { commit(act); return; }
+  battleStats.n++;
+  const where = r.place ? ' — ' + (settings.lang === 'de' ? r.place.de : r.place.ru) : '';
+  if (r.win) {
+    battleStats.win++;
+    act.label = SIDES[act.side].gain + ' · ' + BSC[r.sc].name + where;
+    act.pieces = pieces;
+    commit(act);
+  } else {
+    battleStats.lost++;
+    lastAction = '«Атака отбита · ' + BSC[r.sc].name + where + '»';
+    logEvent(act.side, 'Атака отбита · ' + BSC[r.sc].name + where, 0);
+    toast('Атака отбита: ' + SIDES[act.side].name + ' потерял' + (act.side === 'G' ? 'а' : '') + ' ' + rotAcc(r.lossA) + '. Добавьте атакующих или смените сценарий.', 'err');
+    updateStats(); scheduleAutosave();
+  }
+  if (r.prev) map.flyTo(r.prev.c, r.prev.z, { duration: 0.9, animate: !!settings.anim });
 }
 /* city mode */
 map.on('click', e => {
@@ -2005,6 +2071,576 @@ map.on('click', e => {
   logEvent('sys', 'Добавлен город «' + name + '»', 0);
   sideCacheDirty = true; labels.redraw(); scheduleAutosave();
 });
+
+/* ------------------------------------------------------------------ battles */
+const BSC = {
+  auto: { name: 'Авто' },
+  breach: { name: 'Прорыв', title: 'Прорыв обороны' },
+  pocket: { name: 'Котёл', title: 'Котёл' },
+  broad: { name: 'Фронт', title: 'Наступление широким фронтом' },
+  flank: { name: 'Фланг', title: 'Фланговый удар' },
+  wedge: { name: 'Клин', title: 'Танковый клин' },
+  para: { name: 'Десант', title: 'Воздушный десант' },
+  storm: { name: 'Штурм', title: 'Штурм города' }
+};
+const SPEED = { slow: 11, normal: 7, fast: 4 };
+const NEUTRAL = { name: 'Нейтральные силы', color: '#c9a94e' };
+let battleStats = { n: 0, win: 0, lost: 0 };
+let battleOn = null;
+const bcv = $('#battleCanvas'), bctx = bcv.getContext('2d');
+const ocv = document.createElement('canvas'), ocx = ocv.getContext('2d');
+function sizeBattle() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  bcv.width = innerWidth * dpr; bcv.height = innerHeight * dpr;
+  bcv.style.width = innerWidth + 'px'; bcv.style.height = innerHeight + 'px';
+  bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ocv.width = bcv.width; ocv.height = bcv.height;
+  ocx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+sizeBattle();
+addEventListener('resize', sizeBattle);
+const rnd = (a, b) => a + Math.random() * (b - a);
+const clamp01 = v => (v < 0 ? 0 : v > 1 ? 1 : v);
+const smooth = v => { v = clamp01(v); return v * v * (3 - 2 * v); };
+const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
+const rot = n => n + ' ' + plural(n, 'рота', 'роты', 'рот');
+const rotAcc = n => n + ' ' + plural(n, 'роту', 'роты', 'рот');
+function battleChance(A, D, sc) {
+  if (D <= 0) return 1;
+  let p = A * A / (A * A + Math.pow(1.2 * D, 2));
+  p += ({ pocket: A >= 1.5 * D ? 0.08 : -0.06, para: -0.1, wedge: 0.05, storm: -0.06, breach: 0.02, flank: 0.03 }[sc] || 0);
+  return Math.max(0.03, Math.min(0.97, p));
+}
+function nearestCity(lng, lat) {
+  let best = null, bd = 1e9;
+  for (const c of CITY) {
+    const d = Math.hypot((c.lng - lng) * Math.cos(lat * RAD), c.lat - lat) * (c.rank === 1 ? 0.7 : c.rank === 2 ? 0.85 : 1);
+    if (d < bd) { bd = d; best = c; }
+  }
+  return bd < 3.5 ? best : null;
+}
+function updateChance() {
+  const el = $('#chanceLine');
+  if (!el) return;
+  const A = settings.attackers, D = settings.defenders;
+  const sc = settings.battleScen === 'auto' ? 'broad' : settings.battleScen;
+  const p = settings.battleOutcome === 'always' ? 1 : battleChance(A, D, sc);
+  el.innerHTML = 'Шанс успеха атаки <span class="bar"><i style="width:' + (p * 100).toFixed(0) + '%;background:var(--accent)"></i></span><b>' + Math.round(p * 100) + '%</b>';
+}
+function lockMap(on) {
+  const h = ['scrollWheelZoom', 'touchZoom', 'doubleClickZoom', 'keyboard'];
+  if (on) { map.dragging.disable(); h.forEach(k => map[k] && map[k].disable()); }
+  else { h.forEach(k => map[k] && map[k].enable()); updateDragging(); }
+}
+function flyToBox(bb) {
+  return new Promise(res => {
+    const small = innerWidth < 700;
+    const bounds = L.latLngBounds([[bb[1], bb[0]], [bb[3], bb[2]]]);
+    let done = false;
+    const fin = () => { if (!done) { done = true; setTimeout(res, 60); } };
+    map.once('moveend', fin);
+    setTimeout(fin, settings.anim ? 1900 : 300);
+    map.flyToBounds(bounds, {
+      paddingTopLeft: [small ? 34 : 70, small ? 175 : 150], paddingBottomRight: [small ? 34 : 70, small ? 70 : 60],
+      maxZoom: 8.5, duration: 1.15, animate: !!settings.anim
+    });
+  });
+}
+
+/* NATO-style unit symbol with company size indicator */
+function drawUnit(ctx, x, y, col, type, sc, alpha, state) {
+  const w = 24 * sc, h = 16 * sc;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(x, y);
+  if (type === 'para' && state && state.chute > 0) {
+    const k = state.chute;
+    ctx.globalAlpha = alpha * k;
+    ctx.beginPath(); ctx.arc(0, -h * 1.6, w * 0.7, Math.PI, 0); ctx.fillStyle = 'rgba(245,245,240,.95)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(60,60,60,.7)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-w * 0.7, -h * 1.6); ctx.lineTo(-w / 2, -h / 2); ctx.moveTo(w * 0.7, -h * 1.6); ctx.lineTo(w / 2, -h / 2); ctx.stroke();
+    ctx.globalAlpha = alpha;
+  }
+  ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 4 * sc; ctx.shadowOffsetY = 1.5 * sc;
+  ctx.fillStyle = col;
+  ctx.fillRect(-w / 2, -h / 2, w, h);
+  ctx.shadowColor = 'transparent';
+  ctx.lineWidth = 1.6 * sc; ctx.strokeStyle = '#fff';
+  ctx.strokeRect(-w / 2, -h / 2, w, h);
+  ctx.lineWidth = 1.4 * sc;
+  ctx.beginPath();
+  if (type === 'inf' || type === 'mot' || type === 'para') { ctx.moveTo(-w / 2, -h / 2); ctx.lineTo(w / 2, h / 2); ctx.moveTo(w / 2, -h / 2); ctx.lineTo(-w / 2, h / 2); }
+  ctx.stroke();
+  if (type === 'arm' || type === 'mot') {
+    ctx.beginPath(); ctx.ellipse(0, 0, w * 0.31, h * 0.27, 0, 0, Math.PI * 2); ctx.stroke();
+  }
+  if (type === 'art') { ctx.beginPath(); ctx.arc(0, 0, 2.8 * sc, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); }
+  if (type === 'para') { ctx.beginPath(); ctx.arc(0, h / 2, w * 0.2, Math.PI, 0); ctx.stroke(); }
+  // company size indicator "I"
+  ctx.beginPath(); ctx.moveTo(0, -h / 2 - 2 * sc); ctx.lineTo(0, -h / 2 - 7 * sc);
+  ctx.strokeStyle = '#111'; ctx.lineWidth = 3.2 * sc; ctx.stroke();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.6 * sc; ctx.stroke();
+  if (state && state.dead) {
+    ctx.strokeStyle = '#1a1a1a'; ctx.lineWidth = 2.6 * sc;
+    ctx.beginPath(); ctx.moveTo(-w * .62, -h * .75); ctx.lineTo(w * .62, h * .75); ctx.moveTo(w * .62, -h * .75); ctx.lineTo(-w * .62, h * .75); ctx.stroke();
+  }
+  if (state && state.flag) {
+    ctx.strokeStyle = '#222'; ctx.lineWidth = 1.4 * sc;
+    ctx.beginPath(); ctx.moveTo(w / 2 + 2 * sc, h / 2); ctx.lineTo(w / 2 + 2 * sc, -h); ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.fillRect(w / 2 + 2 * sc, -h, 9 * sc, 6 * sc);
+    ctx.strokeRect(w / 2 + 2 * sc, -h, 9 * sc, 6 * sc);
+  }
+  ctx.restore();
+}
+function drawPlane(ctx, x, y, ang, sc, col) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.scale(sc, sc);
+  ctx.fillStyle = 'rgba(0,0,0,.18)';
+  ctx.beginPath(); ctx.ellipse(6, 26, 16, 5, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = col; ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(18, 0); ctx.lineTo(10, -2.5); ctx.lineTo(2, -2.5); ctx.lineTo(-2, -20); ctx.lineTo(-7, -20); ctx.lineTo(-5, -2.5);
+  ctx.lineTo(-14, -2.5); ctx.lineTo(-18, -8); ctx.lineTo(-21, -8); ctx.lineTo(-19, 0); ctx.lineTo(-21, 8); ctx.lineTo(-18, 8);
+  ctx.lineTo(-14, 2.5); ctx.lineTo(-5, 2.5); ctx.lineTo(-7, 20); ctx.lineTo(-2, 20); ctx.lineTo(2, 2.5); ctx.lineTo(10, 2.5); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+
+async function playBattle(act) {
+  const att = act.side, pieces = act.pieces || [];
+  const bb = [Infinity, Infinity, -Infinity, -Infinity];
+  for (const g of pieces) { const b = bboxOf(g); bb[0] = Math.min(bb[0], b[0]); bb[1] = Math.min(bb[1], b[1]); bb[2] = Math.max(bb[2], b[2]); bb[3] = Math.max(bb[3], b[3]); }
+  if (!isFinite(bb[0])) return { win: true, skipped: true };
+  const inLL = (x, y) => pieces.some(g => pip(g, x, y));
+  const cnt = { U: 0, G: 0, X: 0, n: 0 };
+  let found = 0, sx = 0, sy = 0;
+  for (let k = 0; k < 2500 && found < 90; k++) {
+    const x = rnd(bb[0], bb[2]), y = rnd(bb[1], bb[3]);
+    if (!inLL(x, y)) continue;
+    found++; sx += x; sy += y;
+    cnt[pointSide(x, y) || 'n']++;
+  }
+  if (!found || cnt[att] / found > 0.85) return { win: true, skipped: true };
+  let def = null, best = 0;
+  for (const s of UGX) if (s !== att && cnt[s] > best) { best = cnt[s]; def = s; }
+  if (def && cnt.n > best * 1.5) def = null;
+  let city = null;
+  for (const c of CITY) if (c.lng >= bb[0] && c.lng <= bb[2] && c.lat >= bb[1] && c.lat <= bb[3] && inLL(c.lng, c.lat) && (!city || c.rank < city.rank)) city = c;
+  const place = city || nearestCity(sx / found, sy / found);
+  const prev = { c: map.getCenter(), z: map.getZoom() };
+  battleOn = { skip: false };
+  document.body.classList.add('battle');
+  await flyToBox(bb);
+  lockMap(true);
+  let res;
+  try {
+    const merged = safe(() => norm(pc.union(...pieces)), null);
+    res = await runBattle({ att, def, pieces: merged ? [merged] : pieces, city, place, A: settings.attackers, D: settings.defenders, km: act.gain });
+  } catch (e) {
+    console.warn(e);
+    res = { win: true, sc: 'broad', lossA: 0, lossD: 0 };
+  }
+  lockMap(false);
+  bctx.clearRect(0, 0, innerWidth, innerHeight);
+  document.body.classList.remove('battle');
+  $('#battleBanner').classList.remove('show');
+  battleOn = null;
+  res.prev = prev; res.place = place;
+  return res;
+}
+
+function runBattle(o) {
+  return new Promise(resolve => {
+    const { att, def, pieces, city, place } = o;
+    const A = Math.max(1, o.A), D = Math.max(0, o.D);
+    const nm = c => (c ? (settings.lang === 'de' ? c.de : c.ru) : '');
+    const aCol = SIDES[att].color;
+    const dCol = def ? SIDES[def].color : NEUTRAL.color;
+    const dName = def ? SIDES[def].name : NEUTRAL.name;
+    const toPx = c => { const q = map.latLngToContainerPoint([c[1], c[0]]); return [q.x, q.y]; };
+    const polys = [];
+    for (const g of pieces) for (const p of g) polys.push(p.map(r => r.map(toPx)));
+    const inPx = (x, y) => polys.some(p => pipRing(p[0], x, y) && !p.slice(1).some(h => pipRing(h, x, y)));
+    const pb = [Infinity, Infinity, -Infinity, -Infinity];
+    for (const p of polys) for (const q of p[0]) { pb[0] = Math.min(pb[0], q[0]); pb[1] = Math.min(pb[1], q[1]); pb[2] = Math.max(pb[2], q[0]); pb[3] = Math.max(pb[3], q[1]); }
+    let samp = [];
+    for (let k = 0; k < 6000 && samp.length < 220; k++) { const x = rnd(pb[0], pb[2]), y = rnd(pb[1], pb[3]); if (inPx(x, y)) samp.push([x, y]); }
+    if (!samp.length) samp = [[(pb[0] + pb[2]) / 2, (pb[1] + pb[3]) / 2]];
+    const c = [samp.reduce((a, p) => a + p[0], 0) / samp.length, samp.reduce((a, p) => a + p[1], 0) / samp.length];
+    let Rr = 10;
+    for (const p of polys) for (const q of p[0]) Rr = Math.max(Rr, Math.hypot(q[0] - c[0], q[1] - c[1]));
+    Rr = Math.min(Rr, Math.max(innerWidth, innerHeight));
+    // where is the attacker? probe a ring around the area
+    let vx = 0, vy = 0, hits = 0;
+    for (let k = 0; k < 36; k++) {
+      const a = k / 36 * Math.PI * 2;
+      for (const f of [1.12, 1.45, 1.9]) {
+        const ll = map.containerPointToLatLng([c[0] + Math.cos(a) * Rr * f, c[1] + Math.sin(a) * Rr * f]);
+        if (pointSide(ll.lng, ll.lat) === att) { vx += Math.cos(a) / f; vy += Math.sin(a) / f; hits++; }
+      }
+    }
+    const adjacent = hits > 0 && Math.hypot(vx, vy) > 0.01;
+    let dir = adjacent ? [vx / Math.hypot(vx, vy), vy / Math.hypot(vx, vy)] : (att === 'G' ? [-1, 0] : [1, 0]);
+    // scenario
+    const cityPx = city ? toPx([city.lng, city.lat]) : null;
+    let sc = settings.battleScen;
+    if (sc === 'auto') {
+      if (!adjacent) sc = 'para';
+      else if (cityPx && (city.rank <= 2 ? Math.random() < 0.65 : Math.random() < 0.35)) sc = 'storm';
+      else {
+        const pool = ['breach', 'broad', 'flank', 'wedge'];
+        if (A >= 1.4 * Math.max(1, D) && Rr > 70) pool.push('pocket', 'pocket');
+        if (A > D) pool.push('wedge', 'breach');
+        sc = pool[Math.floor(Math.random() * pool.length)];
+      }
+    }
+    if (sc === 'flank') { const a = (Math.random() < 0.5 ? 1 : -1) * 1.2; dir = [dir[0] * Math.cos(a) - dir[1] * Math.sin(a), dir[0] * Math.sin(a) + dir[1] * Math.cos(a)]; }
+    const perp = [-dir[1], dir[0]];
+    const S = (x, y) => (x - c[0]) * dir[0] + (y - c[1]) * dir[1];
+    const Q = (x, y) => (x - c[0]) * perp[0] + (y - c[1]) * perp[1];
+    const Pt = (s, q) => [c[0] + dir[0] * s + perp[0] * q, c[1] + dir[1] * s + perp[1] * q];
+    let sMin = Infinity, sMax = -Infinity, qMin = Infinity, qMax = -Infinity;
+    for (const p of polys) for (const q of p[0]) { const s_ = S(q[0], q[1]), q_ = Q(q[0], q[1]); sMin = Math.min(sMin, s_); sMax = Math.max(sMax, s_); qMin = Math.min(qMin, q_); qMax = Math.max(qMax, q_); }
+    const depth = Math.max(10, sMax - sMin), wid = Math.max(10, qMax - qMin);
+    const chance = settings.battleOutcome === 'always' ? 1 : battleChance(A, D, sc);
+    const win = settings.battleOutcome === 'always' || D === 0 || Math.random() < chance;
+    const usc = Math.max(0.62, Math.min(1.05, Math.sqrt(Rr / 170)));
+    const T = SPEED[settings.battleSpeed] || 7;
+
+    // ---------- units
+    const nA = Math.min(A, 24), nD = Math.min(D, 24);
+    const COMP = { breach: ['arm', 'inf', 'mot', 'inf', 'arm', 'art'], wedge: ['arm', 'arm', 'mot', 'arm', 'inf'], broad: ['inf', 'inf', 'art', 'inf', 'mot'],
+      flank: ['mot', 'arm', 'inf', 'inf', 'mot'], pocket: ['arm', 'mot', 'inf', 'arm', 'inf'], para: ['para'], storm: ['inf', 'inf', 'art', 'arm', 'inf', 'art'] };
+    const comp = COMP[sc] || COMP.broad;
+    const sorted = samp.slice().sort((a, b) => S(b[0], b[1]) - S(a[0], a[1]));
+    const pickBack = () => sorted[Math.floor(sorted.length * (0.35 + 0.65 * Math.random()))];
+    const nearestSample = (x, y) => { let b = samp[0], bd = 1e12; for (const p of samp) { const d = (p[0] - x) ** 2 + (p[1] - y) ** 2; if (d < bd) { bd = d; b = p; } } return b; };
+    const jit = (p, r) => [p[0] + rnd(-r, r), p[1] + rnd(-r, r)];
+    const units = [];
+    const drops = [];
+    for (let i = 0; i < nA; i++) {
+      const type = comp[i % comp.length];
+      const lane = nA === 1 ? 0.5 : i / (nA - 1);
+      const qL = qMin + wid * (0.1 + 0.8 * lane);
+      let path, delay = rnd(0, 0.08);
+      if (type === 'art' && sc !== 'para') {
+        const st_ = Pt(sMax + 55 + rnd(0, 25), qL * 0.7);
+        path = [st_, Pt(sMax + 35, qL * 0.7)];
+      } else if (sc === 'broad' || sc === 'flank') {
+        path = [Pt(sMax + rnd(38, 60), qL), Pt(sMax - depth * 0.45, qL * 0.92), nearestSample(...Pt(sMin + depth * rnd(0.12, 0.35), qL))];
+      } else if (sc === 'breach') {
+        const q0 = rnd(-9, 9);
+        path = [Pt(sMax + 40 + i * 13, q0), Pt(sMax - depth * 0.2, q0 * 0.5), Pt(sMin + depth * 0.4, q0), jit(pickBack(), 6)];
+        delay = i * 0.012;
+      } else if (sc === 'wedge') {
+        const r = Math.floor((i + 1) / 2), sg = i % 2 ? 1 : -1;
+        path = [Pt(sMax + 40 + r * 15, sg * r * 13), Pt(sMax - depth * 0.6 + r * 15, sg * r * 13), jit(pickBack(), 6)];
+      } else if (sc === 'pocket') {
+        if (i % 3 === 2) {
+          path = [Pt(sMax + rnd(38, 55), qL * 0.6), Pt(sMax - depth * 0.15, qL * 0.55)];
+        } else {
+          const g = i % 3 === 0 ? -1 : 1, qe = (g < 0 ? qMin : qMax) + g * 28;
+          path = [Pt(sMax + rnd(40, 70), qe * 0.55), Pt(sMax - depth * 0.1, qe), Pt(sMin + depth * 0.3, qe * 0.95), Pt(sMin - 22, qe * 0.4), Pt(sMin - 16, g * rnd(5, 22))];
+        }
+      } else if (sc === 'storm') {
+        const tgt = cityPx || c;
+        const ang = Math.atan2(-dir[1], -dir[0]) + Math.PI + (lane - 0.5) * 2.2;
+        const ring = Math.max(14, Math.min(Rr * 0.3, 42)) * rnd(0.6, 1.1);
+        path = [Pt(sMax + rnd(38, 60), qL), Pt(sMax - depth * 0.35, qL * 0.6), [tgt[0] + Math.cos(ang) * ring, tgt[1] + Math.sin(ang) * ring]];
+      } else { // para
+        const tgt = jit(samp[Math.floor(Math.random() * samp.length)], 4);
+        path = [tgt, tgt];
+        drops.push({ t: 0.08 + 0.42 * i / Math.max(1, nA - 1), x: tgt[0], y: tgt[1] });
+      }
+      units.push({ side: 'A', type, path, delay, dieAt: null, flag: false, dropT: sc === 'para' ? drops[drops.length - 1].t : 0 });
+    }
+    const DT = ['inf', 'inf', 'art', 'inf', 'arm', 'mot'];
+    for (let i = 0; i < nD; i++) {
+      const p = jit(i % 2 ? samp[Math.floor(Math.random() * samp.length)] : sorted[Math.floor(Math.pow(Math.random(), 1.4) * sorted.length)], 3);
+      units.push({ side: 'D', type: def ? DT[i % DT.length] : 'inf', path: [p, p], delay: 0, dieAt: null, flag: false });
+    }
+    for (const u of units) {
+      u.len = [0];
+      for (let k = 1; k < u.path.length; k++) u.len.push(u.len[k - 1] + Math.hypot(u.path[k][0] - u.path[k - 1][0], u.path[k][1] - u.path[k - 1][1]));
+    }
+    // losses
+    const lossFracA = win ? Math.min(0.6, D / (A + D) * rnd(0.35, 0.8)) : rnd(0.45, 0.75);
+    const lossA = Math.min(A, Math.round(A * lossFracA)), lossD = win ? D : Math.round(D * rnd(0.1, 0.35));
+    const killA = Math.round(nA * lossA / A);
+    const attIdx = units.filter(u => u.side === 'A');
+    attIdx.sort(() => Math.random() - 0.5).slice(0, killA).forEach(u => { u.dieAt = T * rnd(0.25, 0.9); });
+    const defs = units.filter(u => u.side === 'D');
+    if (!win) defs.sort(() => Math.random() - 0.5).slice(0, Math.round(nD * lossD / Math.max(1, D))).forEach(u => { u.dieAt = T * rnd(0.3, 0.9); });
+    const captured = sc === 'pocket' && win ? Math.round(D * rnd(0.4, 0.7)) : 0;
+
+    // ---------- progress & mask
+    const pf = tn => win ? smooth((tn - 0.1) / 0.76) : (tn < 0.55 ? 0.45 * smooth((tn - 0.1) / 0.45) : 0.45 - 0.4 * smooth((tn - 0.55) / 0.35));
+    const fs = m => sMax - (depth + 24) * m;
+    const BIG = 5000;
+    const cw0 = Math.max(16, wid * 0.11);
+    const shapes = m => {
+      const out = [];
+      const hp = v => out.push({ t: 'poly', p: [Pt(v, -BIG), Pt(v, BIG), Pt(BIG, BIG), Pt(BIG, -BIG)] });
+      if (sc === 'breach') {
+        hp(fs(Math.max(0, (m - 0.3) / 0.7)));
+        const v = fs(Math.min(1, m * 1.9)), cw = cw0 * (1 + 2.2 * smooth((m - 0.35) / 0.65));
+        out.push({ t: 'poly', p: [Pt(v, -cw), Pt(v, cw), Pt(BIG, cw), Pt(BIG, -cw)] });
+      } else if (sc === 'wedge') {
+        hp(fs(m * 0.75));
+        const ap = fs(Math.min(1, m * 1.55));
+        out.push({ t: 'poly', p: [Pt(ap, 0), Pt(BIG, (BIG - ap) * 0.85), Pt(BIG, -(BIG - ap) * 0.85)] });
+      } else if (sc === 'pocket') {
+        hp(fs(m * 0.4));
+        const r = (Rr * 1.08) * (1 - smooth((m - 0.22) / 0.78));
+        out.push({ t: 'ring', c, r });
+      } else if (sc === 'para') {
+        for (const d of drops) { const r = Rr * 0.9 * smooth((m - d.t) / 0.55); if (r > 0) out.push({ t: 'circ', c: [d.x, d.y], r }); }
+      } else if (sc === 'storm') {
+        hp(fs(m));
+        if (cityPx) { const r = Rr * 0.5 * smooth((m - 0.55) / 0.45); if (r > 0) out.push({ t: 'circ', c: cityPx, r }); }
+      } else hp(fs(m));
+      return out;
+    };
+    const covered = (x, y, m) => {
+      for (const sh of shapes(m)) {
+        if (sh.t === 'poly' && pipRing(sh.p, x, y)) return true;
+        if (sh.t === 'circ' && Math.hypot(x - sh.c[0], y - sh.c[1]) <= sh.r) return true;
+        if (sh.t === 'ring' && Math.hypot(x - sh.c[0], y - sh.c[1]) >= sh.r) return true;
+      }
+      return false;
+    };
+    const areaPath = ctx => {
+      ctx.beginPath();
+      for (const p of polys) for (const r of p) { ctx.moveTo(r[0][0], r[0][1]); for (let k = 1; k < r.length; k++) ctx.lineTo(r[k][0], r[k][1]); ctx.closePath(); }
+    };
+    const shapePath = (ctx, list) => {
+      ctx.beginPath();
+      for (const sh of list) {
+        if (sh.t === 'poly') { ctx.moveTo(sh.p[0][0], sh.p[0][1]); for (const q of sh.p.slice(1)) ctx.lineTo(q[0], q[1]); ctx.closePath(); }
+        else if (sh.t === 'circ') { ctx.moveTo(sh.c[0] + sh.r, sh.c[1]); ctx.arc(sh.c[0], sh.c[1], sh.r, 0, Math.PI * 2); }
+      }
+    };
+
+    // ---------- HUD
+    const title = BSC[sc].title + (place ? ' · ' + nm(place) : '');
+    $('#bhTitle').textContent = title;
+    $('#bhSub').textContent = rot(A) + ' против ' + D + ' · шанс ' + Math.round(chance * 100) + '%';
+    $('#bhAdot').style.background = aCol; $('#bhDdot').style.background = dCol;
+    $('#bhPa').style.background = aCol; $('#bhPd').style.background = dCol;
+    const banner = $('#battleBanner');
+
+    // ---------- FX
+    const tracers = [], booms = [], shells = [], smokes = [];
+    const planes = [];
+    if (sc === 'para') {
+      const nP = Math.max(2, Math.min(6, Math.ceil(nA / 4)));
+      for (let k = 0; k < nP; k++) {
+        const q = qMin + wid * (k + 0.5) / nP;
+        planes.push({ a: Pt(sMax + Rr * 1.3, q), b: Pt(sMin - Rr * 1.3, q), t0: 0.04 + k * 0.06, dur: 0.5 });
+      }
+    }
+    const pos = (u, m) => {
+      if (u.path.length === 1 || u.len[u.len.length - 1] === 0) return u.path[0];
+      const k = smooth((m - u.delay) / (1 - u.delay));
+      const L_ = u.len[u.len.length - 1] * k;
+      let j = 1;
+      while (j < u.len.length - 1 && u.len[j] < L_) j++;
+      const a = u.path[j - 1], b = u.path[j];
+      const seg = u.len[j] - u.len[j - 1] || 1;
+      const f = Math.min(1, (L_ - u.len[j - 1]) / seg);
+      return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+    };
+    let t = 0, last = performance.now(), ended = false, endAt = 0;
+    const alive = u => u.dieAt === null || t < u.dieAt;
+    const frontPoint = m => {
+      const v = fs(m);
+      const near = samp.filter(p => Math.abs(S(p[0], p[1]) - v) < Math.max(18, depth * 0.08));
+      return near.length ? jit(near[Math.floor(Math.random() * near.length)], 6) : jit(samp[Math.floor(Math.random() * samp.length)], 6);
+    };
+    const boom = (x, y, r) => { booms.push({ x, y, t0: t, life: 0.55, r }); smokes.push({ x, y, t0: t, life: 2.2, r: r * 1.1 }); };
+
+    function finish() {
+      if (ended) return;
+      ended = true;
+      endAt = t;
+      const capKm = act_km;
+      banner.innerHTML = '<h3 style="color:' + (win ? aCol : dCol) + '">' + (win ? 'ПОБЕДА' : 'АТАКА ОТБИТА') + '</h3>' +
+        '<p><b>' + BSC[sc].title + (place ? ' · ' + nm(place) : '') + '</b></p>' +
+        (win ? '<p>' + SIDES[att].name + ' ' + (att === 'U' ? 'захватил' : 'захватила') + ' ' + fmtKm(capKm) + '</p>' : '<p>' + dName + (def === 'U' ? ' удержал' : def ? ' удержала' : ' удержали') + ' позиции</p>') +
+        '<p>Потери атакующих: ' + rot(lossA) + ' из ' + A + '</p>' +
+        '<p>Потери обороны: ' + rot(lossD) + ' из ' + D + (captured ? ', в плену ' + rot(captured) : '') + '</p>';
+      banner.classList.add('show');
+    }
+    const act_km = o.km || 0;
+    const skipBtn = $('#bhSkip');
+    const onSkip = () => { if (battleOn) battleOn.skip = true; };
+    skipBtn.onclick = onSkip;
+
+    function frame(now) {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (battleOn && battleOn.skip && !ended) { t = T; battleOn.skip = false; }
+      else if (battleOn && battleOn.skip && ended) { endAt = -10; }
+      t += dt;
+      const tn = Math.min(1, t / T);
+      const m = pf(tn);
+      if (tn >= 1) finish();
+      const ctx = bctx;
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      // dim surroundings slightly
+      ctx.save();
+      ctx.fillStyle = 'rgba(10,12,16,.16)';
+      ctx.beginPath(); ctx.rect(0, 0, innerWidth, innerHeight);
+      for (const p of polys) for (const r of p) { ctx.moveTo(r[0][0], r[0][1]); for (let k = 1; k < r.length; k++) ctx.lineTo(r[k][0], r[k][1]); ctx.closePath(); }
+      ctx.fill('evenodd');
+      ctx.restore();
+      // captured part
+      ctx.save();
+      areaPath(ctx); ctx.clip('evenodd');
+      const list = shapes(win && tn >= 1 ? 1 : m);
+      const covPath = c_ => {
+        c_.beginPath();
+        for (const sh of list) {
+          if (sh.t === 'poly') { c_.moveTo(sh.p[0][0], sh.p[0][1]); for (const q of sh.p.slice(1)) c_.lineTo(q[0], q[1]); c_.closePath(); }
+          else if (sh.t === 'circ') { c_.moveTo(sh.c[0] + sh.r, sh.c[1]); c_.arc(sh.c[0], sh.c[1], sh.r, 0, Math.PI * 2); }
+        }
+      };
+      const ring = list.find(s_ => s_.t === 'ring');
+      const ringPath = c_ => { c_.beginPath(); c_.rect(-BIG, -BIG, BIG * 2 + innerWidth, BIG * 2 + innerHeight); c_.moveTo(ring.c[0] + ring.r, ring.c[1]); c_.arc(ring.c[0], ring.c[1], Math.max(0.1, ring.r), 0, Math.PI * 2, true); };
+      // fill of the captured part
+      ctx.save();
+      areaPath(ctx); ctx.clip('evenodd');
+      ctx.fillStyle = hexA(aCol, 0.5);
+      covPath(ctx); ctx.fill('nonzero');
+      if (ring) { ringPath(ctx); ctx.fill('evenodd'); }
+      ctx.restore();
+      // glowing front edge = outer boundary of the union of shapes
+      ocx.save();
+      ocx.clearRect(0, 0, innerWidth, innerHeight);
+      areaPath(ocx); ocx.clip('evenodd');
+      ocx.lineWidth = 7; ocx.strokeStyle = hexA(SIDES[att].glow, 0.95); ocx.shadowColor = aCol; ocx.shadowBlur = 12;
+      covPath(ocx); ocx.stroke();
+      if (ring) { ocx.beginPath(); ocx.arc(ring.c[0], ring.c[1], Math.max(0.1, ring.r), 0, Math.PI * 2); ocx.stroke(); }
+      ocx.shadowBlur = 0;
+      ocx.globalCompositeOperation = 'destination-out';
+      covPath(ocx); ocx.fill('nonzero');
+      if (ring) { ringPath(ocx); ocx.fill('evenodd'); }
+      ocx.restore();
+      ctx.drawImage(ocv, 0, 0, innerWidth, innerHeight);
+      // target outline
+      ctx.save();
+      areaPath(ctx);
+      ctx.setLineDash([7, 5]); ctx.lineDashOffset = -t * 20;
+      ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,' + (0.55 + 0.35 * Math.sin(t * 5)) + ')'; ctx.stroke();
+      ctx.restore();
+
+      const fighting = tn > 0.08 && tn < 0.97;
+      const A_ = units.filter(u => u.side === 'A' && alive(u) && (sc !== 'para' || m >= u.dropT));
+      const D_ = units.filter(u => u.side === 'D' && alive(u) && !u.flag);
+      // defenders fall when the front passes over them
+      for (const u of units) {
+        if (u.side !== 'D' || u.dieAt !== null || !win) continue;
+        const p = u.path[0];
+        if (covered(p[0], p[1], m) || tn > 0.92) {
+          if (sc === 'pocket' && units.filter(x => x.flag).length < Math.round(nD * captured / Math.max(1, D))) { u.flag = true; u.dieAt = t + rnd(0.9, 1.6); }
+          else u.dieAt = t + rnd(0.1, 0.5);
+        }
+      }
+      // spawn fx
+      if (fighting && !ended) {
+        const rate = (A_.length + D_.length) * 1.6 * dt;
+        for (let k = 0; k < Math.floor(rate + Math.random()); k++) {
+          const fromA = Math.random() < (A_.length / (A_.length + D_.length || 1));
+          const shooters = fromA ? A_ : D_, targets = fromA ? D_ : A_;
+          if (!shooters.length || !targets.length) break;
+          const sh = shooters[Math.floor(Math.random() * shooters.length)];
+          if (sh.type === 'art') continue;
+          const p = pos(sh, m);
+          let tg = null, bd = 1e12;
+          for (const u of targets) { const q = pos(u, m); const d = (q[0] - p[0]) ** 2 + (q[1] - p[1]) ** 2; if (d < bd) { bd = d; tg = q; } }
+          if (!tg || bd > (Rr * 0.9 + 120) ** 2) continue;
+          tracers.push({ a: p, b: jit(tg, 6), t0: t, life: 0.2 + Math.random() * 0.12, col: fromA ? '#ffe08a' : '#ffb27a' });
+        }
+        if (Math.random() < dt * (3 + (A + D) * 0.12)) { const fp = frontPoint(m); boom(fp[0], fp[1], rnd(8, 16) * usc); }
+        for (const u of A_) if (u.type === 'art' && Math.random() < dt * 0.9 && D_.length) {
+          const tg = pos(D_[Math.floor(Math.random() * D_.length)], m);
+          shells.push({ a: pos(u, m), b: jit(tg, 10), t0: t, life: 0.75 });
+        }
+        for (const u of D_) if (u.type === 'art' && Math.random() < dt * 0.6 && A_.length) {
+          const tg = pos(A_[Math.floor(Math.random() * A_.length)], m);
+          shells.push({ a: pos(u, m), b: jit(tg, 12), t0: t, life: 0.75 });
+        }
+        if (sc === 'storm' && cityPx && tn > 0.4 && Math.random() < dt * 4) boom(...jit(cityPx, Math.min(40, Rr * 0.25)), rnd(10, 18) * usc);
+      }
+      // smoke
+      for (let k = smokes.length - 1; k >= 0; k--) {
+        const s_ = smokes[k], kk = (t - s_.t0) / s_.life;
+        if (kk >= 1) { smokes.splice(k, 1); continue; }
+        ctx.beginPath(); ctx.arc(s_.x, s_.y - kk * 10, s_.r * (0.8 + 1.4 * kk), 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(70,70,70,' + (0.32 * (1 - kk)) + ')'; ctx.fill();
+      }
+      // planes & drops
+      for (const pl of planes) {
+        const k = (m - pl.t0) / pl.dur;
+        if (k < 0 || k > 1) continue;
+        const x = pl.a[0] + (pl.b[0] - pl.a[0]) * k, y = pl.a[1] + (pl.b[1] - pl.a[1]) * k;
+        drawPlane(ctx, x, y, Math.atan2(pl.b[1] - pl.a[1], pl.b[0] - pl.a[0]), 1.15 * usc, att === 'G' ? '#59616c' : '#4e6b45');
+      }
+      // units
+      for (const u of units) {
+        if (u.side === 'A' && sc === 'para' && m < u.dropT) continue;
+        const p = pos(u, u.side === 'A' ? m : 0);
+        let alpha = u.side === 'A' ? Math.min(1, tn / 0.08) : 1;
+        let dead = false, x = p[0], y = p[1], state = { flag: u.flag };
+        if (u.dieAt !== null && t >= u.dieAt) { const k = (t - u.dieAt) / 0.9; if (k >= 1) continue; alpha *= 1 - k; dead = !u.flag; }
+        if (u.side === 'D' && !dead) { x += Math.sin(t * 7 + p[0]) * 0.6; }
+        if (u.side === 'A' && sc === 'para') { const k = clamp01((m - u.dropT) / 0.07); state.chute = 1 - k; y -= (1 - k) * 46 * usc; }
+        state.dead = dead;
+        drawUnit(ctx, x, y, u.side === 'A' ? aCol : dCol, u.type, usc, alpha, state);
+      }
+      // shells
+      for (let k = shells.length - 1; k >= 0; k--) {
+        const s_ = shells[k], kk = (t - s_.t0) / s_.life;
+        if (kk >= 1) { boom(s_.b[0], s_.b[1], rnd(9, 15) * usc); shells.splice(k, 1); continue; }
+        const x = s_.a[0] + (s_.b[0] - s_.a[0]) * kk, y = s_.a[1] + (s_.b[1] - s_.a[1]) * kk - Math.sin(Math.PI * kk) * 60 * usc;
+        ctx.beginPath(); ctx.arc(x, y, 2.2, 0, Math.PI * 2); ctx.fillStyle = '#2b2b2b'; ctx.fill();
+      }
+      // tracers
+      ctx.lineCap = 'round';
+      for (let k = tracers.length - 1; k >= 0; k--) {
+        const tr = tracers[k], kk = (t - tr.t0) / tr.life;
+        if (kk >= 1) { tracers.splice(k, 1); continue; }
+        const k0 = Math.max(0, kk - 0.3);
+        ctx.beginPath();
+        ctx.moveTo(tr.a[0] + (tr.b[0] - tr.a[0]) * k0, tr.a[1] + (tr.b[1] - tr.a[1]) * k0);
+        ctx.lineTo(tr.a[0] + (tr.b[0] - tr.a[0]) * kk, tr.a[1] + (tr.b[1] - tr.a[1]) * kk);
+        ctx.strokeStyle = tr.col; ctx.lineWidth = 1.6; ctx.globalAlpha = 1 - kk * 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+        if (kk < 0.2) { ctx.beginPath(); ctx.arc(tr.a[0], tr.a[1], 3, 0, Math.PI * 2); ctx.fillStyle = '#fff3c4'; ctx.fill(); }
+      }
+      // explosions
+      for (let k = booms.length - 1; k >= 0; k--) {
+        const b = booms[k], kk = (t - b.t0) / b.life;
+        if (kk >= 1) { booms.splice(k, 1); continue; }
+        const r = b.r * (0.35 + kk);
+        const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
+        g.addColorStop(0, 'rgba(255,250,220,' + (1 - kk) + ')');
+        g.addColorStop(0.4, 'rgba(255,170,50,' + (0.9 * (1 - kk)) + ')');
+        g.addColorStop(1, 'rgba(200,60,20,0)');
+        ctx.beginPath(); ctx.arc(b.x, b.y, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+      }
+      // HUD
+      const aliveA = units.filter(u => u.side === 'A' && alive(u)).length, aliveD = units.filter(u => u.side === 'D' && alive(u) && !u.flag).length;
+      const shA = ended ? A - lossA : Math.round(aliveA * A / Math.max(1, nA));
+      const shD = ended ? D - lossD : (nD ? Math.round(aliveD * D / nD) : 0);
+      $('#bhA').textContent = shA; $('#bhD').textContent = shD;
+      const tot = shA + shD || 1;
+      $('#bhPa').style.width = (shA / tot * 100) + '%'; $('#bhPd').style.width = (shD / tot * 100) + '%';
+      const hold = 1.7;
+      if (ended && t - endAt > hold) { resolve({ win, sc, lossA, lossD, captured }); return; }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  });
+}
 
 /* ------------------------------------------------------------------ UI */
 function toast(msg, kind = 'warn') {
@@ -2050,6 +2686,7 @@ function updateStats() {
   let n = 0;
   for (let k = undoStack.length - 1; k >= 0; k--) { if (undoStack[k].type === 'reset') break; n++; }
   $('#changesCount').textContent = n;
+  $('#battleCount').textContent = battleStats.n ? battleStats.n + ' (побед ' + battleStats.win + ', отбито ' + battleStats.lost + ')' : '0';
   $('#lastAction').textContent = lastAction;
   $('#refNote').textContent = settings.pctBase === 'all' ? 'Доля от суммарной закрашенной территории всех сторон.' : SCEN[scen].note;
 }
@@ -2169,6 +2806,14 @@ function syncSettingsUI() {
   pc_.innerHTML = settings.protect
     ? '<svg class="i" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span><b>Защита границ: вкл</b><small>СССР и серая зона не захватывают земли за границами СССР</small></span>'
     : '<svg class="i" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><span><b>Защита границ: выкл</b><small>Можно наступать на территорию Германии</small></span>';
+  $('#attN').value = settings.attackers; $('#attNV').textContent = settings.attackers;
+  $('#defN').value = settings.defenders; $('#defNV').textContent = settings.defenders;
+  for (const b of $$('#scenGrid button')) b.classList.toggle('on', b.dataset.v === settings.battleScen);
+  const bc_ = $('#battleCard');
+  bc_.className = 'protect battlecard ' + (settings.battles ? 'on' : 'off');
+  bc_.innerHTML = '<svg class="i" viewBox="0 0 24 24"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg><span><b>Анимация боя: ' + (settings.battles ? 'вкл' : 'выкл') + '</b><small>' +
+    (settings.battles ? 'Камера приближается, роты сражаются за участок (Германия и СССР)' : 'Территория закрашивается сразу, без боя') + '</small></span>';
+  updateChance();
   const meta = document.querySelector('meta[name=theme-color]');
   if (meta) meta.content = settings.theme === 'dark' ? '#1b1e24' : '#f4f5f7';
 }
@@ -2192,6 +2837,11 @@ for (const t of $$('[data-tgl]')) t.addEventListener('click', () => setSetting(t
 $('#cartoKey').addEventListener('change', e => setSetting('cartoKey', e.target.value.trim()));
 $('#brushSize').addEventListener('input', e => { settings.brushSize = +e.target.value; $('#brushSizeV').textContent = settings.brushSize; saveSettings(); });
 $('#smooth').addEventListener('input', e => { settings.smooth = +e.target.value; $('#smoothV').textContent = settings.smooth; saveSettings(); });
+$('#scenGrid').innerHTML = Object.entries(BSC).map(([k, b]) => '<button class="chip" data-v="' + k + '">' + b.name + '</button>').join('');
+$('#scenGrid').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setSetting('battleScen', b.dataset.v); });
+$('#battleCard').addEventListener('click', () => setSetting('battles', !settings.battles));
+$('#attN').addEventListener('input', e => { settings.attackers = +e.target.value; $('#attNV').textContent = settings.attackers; saveSettings(); updateChance(); });
+$('#defN').addEventListener('input', e => { settings.defenders = +e.target.value; $('#defNV').textContent = settings.defenders; saveSettings(); updateChance(); });
 $('#protectCard').addEventListener('click', () => setSetting('protect', !settings.protect));
 $('#citiesBtn').addEventListener('click', () => setSetting('cities', !settings.cities));
 $('#villagesBtn').addEventListener('click', () => setSetting('villages', !settings.villages));
@@ -2251,7 +2901,7 @@ function serialize() {
     for (const s of UGX) if (st[s][i] !== init[s]) { e[s] = st[s][i] || 0; diff = true; }
     if (diff) tiles[T[i].id] = e;
   }
-  return { app: 'build-the-front-ww2', v: 1, scen, tiles, cities: customCities.map(c => ({ ru: c.ru, de: c.de, lat: c.lat, lng: c.lng })), log: events.slice(-200), last: lastAction, saved: Date.now() };
+  return { app: 'build-the-front-ww2', v: 1, scen, tiles, cities: customCities.map(c => ({ ru: c.ru, de: c.de, lat: c.lat, lng: c.lng })), log: events.slice(-200), last: lastAction, battles: battleStats, saved: Date.now() };
 }
 function deserialize(o) {
   if (!o || o.app !== 'build-the-front-ww2' || !SCEN[o.scen]) throw new Error('bad file');
@@ -2266,6 +2916,7 @@ function deserialize(o) {
   customCities = (o.cities || []).map(c => Object.assign({ side: null }, c));
   events = Array.isArray(o.log) ? o.log : [];
   lastAction = o.last || lastAction;
+  battleStats = Object.assign({ n: 0, win: 0, lost: 0 }, o.battles || {});
   renderAll(); renderEvents(); updateScenCards();
 }
 let autoT = 0;
@@ -2384,6 +3035,8 @@ addEventListener('keydown', e => {
   if (ctrl && (k === 's' || k === 'ы')) { e.preventDefault(); saveSlot(); return; }
   if (ctrl || e.altKey) return;
   if (k === ' ') { if (!spaceDown) { spaceDown = true; updateDragging(); } e.preventDefault(); return; }
+  if (k === 'Escape' && battleOn) { battleOn.skip = true; return; }
+  if (battleOn) return;
   if (k === 'Escape') {
     if (drawing) { drawing = null; redrawPreview(); return; }
     const m = $('.modal.open'); if (m) { closeModal(m.id); return; }
@@ -2425,7 +3078,7 @@ setTab('map');
 requestAnimationFrame(() => { $('#busy').classList.add('done'); setTimeout(() => $('#busy').remove(), 500); });
 if (restored) toast('Карта восстановлена из автосохранения.', 'ok');
 else { toast(SCEN.peak.loaded + ' (' + fmtPct(occupiedShare()) + ' территории СССР занято).', 'ok'); logEvent('sys', 'Загружена карта «' + SCEN.peak.title + '»', 0); }
-window.__btf = { map, st, capture, commit, shares, undo, redo, setTool, setSide, setMode, loadScenario, serialize, T, toast, pointSide, clipErrors: () => clipErrors };
+window.__btf = { settings, map, st, capture, commit, shares, undo, redo, setTool, setSide, setMode, loadScenario, serialize, T, toast, pointSide, clipErrors: () => clipErrors };
 })();
 </script>
 </body>
