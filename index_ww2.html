@@ -1136,7 +1136,7 @@ body.battle .mappanel,body.battle .sheet,body.battle .bottomnav,body.battle .pla
         <kbd>F</kbd> Front · <kbd>E</kbd> Editor · <kbd>V</kbd> View · <kbd>+</kbd> <kbd>−</kbd> масштаб · <kbd>0</kbd> камера<br>
         <kbd>Пробел</kbd> / правая кнопка — двигать карту · <kbd>Esc</kbd> отмена</div>
       </div>
-      <div class="foot">Build the front 1.0 · WWII. Исходные карты: мир на 01.09.1939 и на 05.12.1941 (пик наступления вермахта под Москвой). Союзники — СССР, Великобритания, США, Франция, Польша, Китай — у каждого свой цвет; страны Оси (Германия, Италия, Румыния, Венгрия, Финляндия, Болгария, Словакия, Япония) — цветом Германии. Береговые линии и реки — Natural Earth, исторические границы — historical-basemaps. Битвы при захвате — игровая анимация: роты в обозначениях НАТО, исход зависит от соотношения сил. Это игровая песочница; границы и линия фронта упрощены.</div>
+      <div class="foot">Build the front 1.0 · WWII. Исходные карты: мир на 01.09.1939 и на 05.12.1941 (пик наступления вермахта под Москвой). СССР — красный; Союзники (Великобритания, США, Франция, Польша, Китай) — общий зелёный цвет; страны Оси (Германия, Италия, Румыния, Венгрия, Финляндия, Болгария, Словакия, Япония) — цветом Германии. Береговые линии и реки — Natural Earth, исторические границы — historical-basemaps. Битвы при захвате — игровая анимация: роты в обозначениях НАТО, исход зависит от соотношения сил. Это игровая песочница; границы и линия фронта упрощены.</div>
     </div>
     <div class="mfoot"><button class="btn" id="resetCam"><svg class="i" viewBox="0 0 24 24"><line x1="2" x2="5" y1="12" y2="12"/><line x1="19" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="5"/><line x1="12" x2="12" y1="19" y2="22"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/></svg>Сбросить камеру</button><button class="btn primary" data-close>Готово</button></div>
   </div>
@@ -1208,14 +1208,15 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
 /* ------------------------------------------------------------------ constants */
 const AXIS = '#4a7fe0', AXIS_GLOW = '#9cc0ff';
+const ALLY = '#34a56c', ALLY_GLOW = '#9be3b8';
 const SIDES = {
   U: { name: 'СССР', color: '#e5534b', glow: '#ff9d95', g: 'm', bloc: 'ally', c: 1 },
   G: { name: 'Германия', color: AXIS, glow: AXIS_GLOW, g: 'f', bloc: 'axis', c: 1 },
-  GB: { name: 'Великобритания', short: 'Британия', color: '#34a56c', glow: '#9be3b8', g: 'f', bloc: 'ally', c: 1 },
-  US: { name: 'США', color: '#8e6ad8', glow: '#cbb8ff', g: 'pl', bloc: 'ally', c: 1 },
-  FR: { name: 'Франция', color: '#22b3c4', glow: '#94e8f2', g: 'f', bloc: 'ally', c: 1 },
-  PL: { name: 'Польша', color: '#e08a3c', glow: '#ffc48f', g: 'f', bloc: 'ally', c: 1 },
-  CN: { name: 'Китай', color: '#b06a2c', glow: '#e8ad74', g: 'm', bloc: 'ally', c: 1 },
+  GB: { name: 'Великобритания', short: 'Британия', color: ALLY, glow: ALLY_GLOW, g: 'f', bloc: 'ally', c: 1 },
+  US: { name: 'США', color: ALLY, glow: ALLY_GLOW, g: 'pl', bloc: 'ally', c: 1 },
+  FR: { name: 'Франция', color: ALLY, glow: ALLY_GLOW, g: 'f', bloc: 'ally', c: 1 },
+  PL: { name: 'Польша', color: ALLY, glow: ALLY_GLOW, g: 'f', bloc: 'ally', c: 1 },
+  CN: { name: 'Китай', color: ALLY, glow: ALLY_GLOW, g: 'm', bloc: 'ally', c: 1 },
   IT: { name: 'Италия', color: AXIS, glow: AXIS_GLOW, g: 'f', bloc: 'axis', c: 1 },
   RO: { name: 'Румыния', color: AXIS, glow: AXIS_GLOW, g: 'f', bloc: 'axis', c: 1 },
   HU: { name: 'Венгрия', color: AXIS, glow: AXIS_GLOW, g: 'f', bloc: 'axis', c: 1 },
@@ -2955,7 +2956,8 @@ $('#resetCam').addEventListener('click', () => homeView(true));
 $('#sideStrip').innerHTML = COUNTRY_ORDER.map(k => '<button class="sidebtn" data-side="' + k + '" style="--sc:' + SIDES[k].color + '">' + dotHtml(k) + (SIDES[k].short || SIDES[k].name) + '</button>').join('');
 const sideCard = k => '<button class="sidecard" data-side="' + k + '" style="--sc:' + SIDES[k].color + '" title="' + SIDES[k].name + '">' + dotHtml(k) + '<span class="nm">' + (SIDES[k].short || SIDES[k].name) + '</span>' + (SIDE_KEYS[k] ? '<span class="k">' + SIDE_KEYS[k] + '</span>' : '') + '</button>';
 $('#sideCards').innerHTML =
-  '<div class="glabel">Союзники</div><div class="grid2">' + ALLIES.map(sideCard).join('') + '</div>' +
+  '<div class="glabel">СССР</div><div class="grid2">' + sideCard('U') + '</div>' +
+  '<div class="glabel">Союзники · общий цвет</div><div class="grid2">' + ALLIES.filter(k => k !== 'U').map(sideCard).join('') + '</div>' +
   '<div class="glabel">Ось · цвет Германии</div><div class="grid2">' + AXIS_SIDES.map(sideCard).join('') + '</div>' +
   '<div class="grid2">' + sideCard('X') + sideCard('N') + '</div>';
 for (const b of $$('[data-side]')) b.addEventListener('click', () => setSide(b.dataset.side));
