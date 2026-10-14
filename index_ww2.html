@@ -1496,7 +1496,9 @@ function capture(sd, P, opts = {}) {
     if (Math.abs(g) < 0.05 && UGX.every(s => after[s] === before[s] || geomArea(after[s]) === area[s][i])) continue;
     gain += Math.max(0, g);
     changes[i] = { before, after };
-    pieces.push(Pi);
+    // only the part that actually changes hands (enemy / neutral land) is animated
+    const gp = sd === 'N' ? Pi : (before[sd] === land ? null : gD(Pi, before[sd]));
+    if (gp && geomArea(gp) >= 0.5) pieces.push(gp);
   }
   if (!hitLand) { if (!opts.quiet) toast('Не удалось построить область — попробуйте нарисовать крупнее.', 'warn'); return null; }
   if (!hitAllowed) {
