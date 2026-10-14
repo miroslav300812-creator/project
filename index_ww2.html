@@ -2393,47 +2393,80 @@ function runBattle(o) {
     const fs = m => sMax - (depth + 24) * m;
     const BIG = 5000;
     const cw0 = Math.max(16, wid * 0.11);
+    // irregular, jagged front: smooth drifting bends + fixed sharp kinks
+    const ph = Array.from({ length: 8 }, () => Math.random() * Math.PI * 2);
+    const kink = Array.from({ length: 4096 }, () => Math.random() * 2 - 1);
+    const amp = Math.max(7, Math.min(28, depth * 0.075));
+    const STEP = 11;
+    const nz = (u, seed) => {
+      const k = Math.round(u / STEP);
+      return amp * (0.55 * Math.sin(u * 0.019 + ph[seed % 8] + t * 0.3) +
+        0.3 * Math.sin(u * 0.051 + ph[(seed + 3) % 8] - t * 0.45) +
+        0.15 * Math.sin(u * 0.12 + ph[(seed + 5) % 8])) +
+        amp * 0.5 * kink[((k % 4096) + 4096 + seed * 397) % 4096];
+    };
+    const qa = qMin - 50, qb = qMax + 50;
+    const jagLine = (v, seed, scale = 1) => {
+      const pts = [];
+      for (let q = qa; q <= qb + STEP; q += STEP) pts.push(Pt(v + nz(q, seed) * scale, q));
+      return pts;
+    };
+    const blob = (cx, cy, r, seed) => {
+      const pts = [], n = Math.max(28, Math.min(120, Math.round(r / 4)));
+      const ja = Math.min(1, r / 40);
+      for (let k = 0; k < n; k++) {
+        const th = k / n * Math.PI * 2;
+        const rr = r * (1 + 0.13 * Math.sin(3 * th + ph[seed % 8] + t * 0.25) + 0.07 * Math.sin(7 * th + ph[(seed + 2) % 8])) +
+          amp * 0.55 * ja * kink[(k * 31 + seed * 97) % 4096];
+        pts.push([cx + Math.cos(th) * Math.max(0, rr), cy + Math.sin(th) * Math.max(0, rr)]);
+      }
+      return pts;
+    };
     const shapes = m => {
       const out = [];
-      const hp = v => out.push({ t: 'poly', p: [Pt(v, -BIG), Pt(v, BIG), Pt(BIG, BIG), Pt(BIG, -BIG)] });
+      const hp = (v, seed = 0) => {
+        const e = jagLine(v, seed);
+        out.push({ t: 'poly', p: [Pt(BIG, qa - BIG), Pt(v, qa - BIG), ...e, Pt(v, qb + BIG), Pt(BIG, qb + BIG)] });
+      };
       if (sc === 'breach') {
-        hp(fs(Math.max(0, (m - 0.3) / 0.7)));
+        hp(fs(Math.max(0, (m - 0.3) / 0.7)), 1);
         const v = fs(Math.min(1, m * 1.9)), cw = cw0 * (1 + 2.2 * smooth((m - 0.35) / 0.65));
-        out.push({ t: 'poly', p: [Pt(v, -cw), Pt(v, cw), Pt(BIG, cw), Pt(BIG, -cw)] });
+        const back = sMax + 70, pts = [Pt(BIG, -cw)];
+        for (let s_ = back; s_ > v; s_ -= STEP) pts.push(Pt(s_, -cw + nz(s_, 2) * 0.7));
+        for (let q = -cw; q <= cw; q += Math.max(5, cw / 6)) { const f = q / cw; pts.push(Pt(v - cw * 0.45 * (1 - f * f) + nz(q * 3, 4) * 0.5, q)); }
+        for (let s_ = v; s_ < back; s_ += STEP) pts.push(Pt(s_, cw + nz(s_, 6) * 0.7));
+        pts.push(Pt(BIG, cw));
+        out.push({ t: 'poly', p: pts });
       } else if (sc === 'wedge') {
-        hp(fs(m * 0.75));
-        const ap = fs(Math.min(1, m * 1.55));
-        out.push({ t: 'poly', p: [Pt(ap, 0), Pt(BIG, (BIG - ap) * 0.85), Pt(BIG, -(BIG - ap) * 0.85)] });
+        hp(fs(m * 0.75), 1);
+        const ap = fs(Math.min(1, m * 1.55)), back = sMax + 90, pts = [];
+        for (let s_ = back; s_ > ap; s_ -= STEP) pts.push(Pt(s_, -(s_ - ap) * 0.85 + nz(s_, 3) * 0.8));
+        pts.push(Pt(ap + nz(0, 5) * 0.3, 0));
+        for (let s_ = ap + STEP; s_ <= back; s_ += STEP) pts.push(Pt(s_, (s_ - ap) * 0.85 + nz(s_, 7) * 0.8));
+        pts.push(Pt(BIG, (BIG - ap) * 0.85), Pt(BIG, -(BIG - ap) * 0.85));
+        out.push({ t: 'poly', p: pts });
       } else if (sc === 'pocket') {
-        hp(fs(m * 0.4));
+        hp(fs(m * 0.4), 1);
         const r = (Rr * 1.08) * (1 - smooth((m - 0.22) / 0.78));
-        out.push({ t: 'ring', c, r });
+        out.push({ t: 'ring', p: blob(c[0], c[1], r, 3) });
       } else if (sc === 'para') {
-        for (const d of drops) { const r = Rr * 0.9 * smooth((m - d.t) / 0.55); if (r > 0) out.push({ t: 'circ', c: [d.x, d.y], r }); }
+        drops.forEach((d, i) => { const r = Rr * 0.9 * smooth((m - d.t) / 0.55); if (r > 1) out.push({ t: 'poly', p: blob(d.x, d.y, r, i + 1) }); });
       } else if (sc === 'storm') {
-        hp(fs(m));
-        if (cityPx) { const r = Rr * 0.5 * smooth((m - 0.55) / 0.45); if (r > 0) out.push({ t: 'circ', c: cityPx, r }); }
-      } else hp(fs(m));
+        hp(fs(m), 1);
+        if (cityPx) { const r = Rr * 0.5 * smooth((m - 0.55) / 0.45); if (r > 1) out.push({ t: 'poly', p: blob(cityPx[0], cityPx[1], r, 4) }); }
+      } else hp(fs(m), 1);
       return out;
     };
-    const covered = (x, y, m) => {
-      for (const sh of shapes(m)) {
+    const coveredIn = (x, y, list) => {
+      for (const sh of list) {
         if (sh.t === 'poly' && pipRing(sh.p, x, y)) return true;
-        if (sh.t === 'circ' && Math.hypot(x - sh.c[0], y - sh.c[1]) <= sh.r) return true;
-        if (sh.t === 'ring' && Math.hypot(x - sh.c[0], y - sh.c[1]) >= sh.r) return true;
+        if (sh.t === 'ring' && !pipRing(sh.p, x, y)) return true;
       }
       return false;
     };
     const areaPath = ctx => {
       ctx.beginPath();
       for (const p of polys) for (const r of p) { ctx.moveTo(r[0][0], r[0][1]); for (let k = 1; k < r.length; k++) ctx.lineTo(r[k][0], r[k][1]); ctx.closePath(); }
-    };
-    const shapePath = (ctx, list) => {
-      ctx.beginPath();
-      for (const sh of list) {
-        if (sh.t === 'poly') { ctx.moveTo(sh.p[0][0], sh.p[0][1]); for (const q of sh.p.slice(1)) ctx.lineTo(q[0], q[1]); ctx.closePath(); }
-        else if (sh.t === 'circ') { ctx.moveTo(sh.c[0] + sh.r, sh.c[1]); ctx.arc(sh.c[0], sh.c[1], sh.r, 0, Math.PI * 2); }
-      }
     };
 
     // ---------- HUD
@@ -2514,11 +2547,11 @@ function runBattle(o) {
         c_.beginPath();
         for (const sh of list) {
           if (sh.t === 'poly') { c_.moveTo(sh.p[0][0], sh.p[0][1]); for (const q of sh.p.slice(1)) c_.lineTo(q[0], q[1]); c_.closePath(); }
-          else if (sh.t === 'circ') { c_.moveTo(sh.c[0] + sh.r, sh.c[1]); c_.arc(sh.c[0], sh.c[1], sh.r, 0, Math.PI * 2); }
         }
       };
       const ring = list.find(s_ => s_.t === 'ring');
-      const ringPath = c_ => { c_.beginPath(); c_.rect(-BIG, -BIG, BIG * 2, BIG * 2); c_.moveTo(ring.c[0] + ring.r, ring.c[1]); c_.arc(ring.c[0], ring.c[1], Math.max(0.1, ring.r), 0, Math.PI * 2, true); };
+      const ringLoop = c_ => { if (ring.p.length) { c_.moveTo(ring.p[0][0], ring.p[0][1]); for (const q of ring.p) c_.lineTo(q[0], q[1]); c_.closePath(); } };
+      const ringPath = c_ => { c_.beginPath(); c_.rect(-BIG, -BIG, BIG * 2, BIG * 2); ringLoop(c_); };
       // fill of the captured part
       ctx.save();
       areaPath(ctx); ctx.clip('evenodd');
@@ -2529,9 +2562,9 @@ function runBattle(o) {
       // glowing front edge = outer boundary of the union of shapes
       ocx.save();
       areaPath(ocx); ocx.clip('evenodd');
-      ocx.lineWidth = 7; ocx.strokeStyle = hexA(SIDES[att].glow, 0.95); ocx.shadowColor = aCol; ocx.shadowBlur = 12;
+      ocx.lineWidth = 6; ocx.lineJoin = 'miter'; ocx.miterLimit = 3; ocx.strokeStyle = hexA(SIDES[att].glow, 0.95); ocx.shadowColor = aCol; ocx.shadowBlur = 12;
       covPath(ocx); ocx.stroke();
-      if (ring) { ocx.beginPath(); ocx.arc(ring.c[0], ring.c[1], Math.max(0.1, ring.r), 0, Math.PI * 2); ocx.stroke(); }
+      if (ring) { ocx.beginPath(); ringLoop(ocx); ocx.stroke(); }
       ocx.shadowBlur = 0;
       ocx.globalCompositeOperation = 'destination-out';
       covPath(ocx); ocx.fill('nonzero');
@@ -2552,7 +2585,7 @@ function runBattle(o) {
       for (const u of units) {
         if (u.side !== 'D' || u.dieAt !== null || !win) continue;
         const p = u.path[0];
-        if (covered(p[0], p[1], m) || tn > 0.92) {
+        if (coveredIn(p[0], p[1], list) || tn > 0.92) {
           if (sc === 'pocket' && units.filter(x => x.flag).length < Math.round(nD * captured / Math.max(1, D))) { u.flag = true; u.dieAt = t + rnd(0.9, 1.6); }
           else u.dieAt = t + rnd(0.1, 0.5);
         }
