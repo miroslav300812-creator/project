@@ -1923,6 +1923,7 @@ const canDraw = () => (tool === 'lasso' || tool === 'brush') && !battleOn && mod
 function updateDragging() {
   const pan = !canDraw();
   if (pan) map.dragging.enable(); else map.dragging.disable();
+  if (!battleOn) { if (pan) map.doubleClickZoom.enable(); else map.doubleClickZoom.disable(); }
   mapEl.classList.toggle('tool-lasso', !pan && tool === 'lasso');
   mapEl.classList.toggle('tool-brush', !pan && tool === 'brush');
   mapEl.classList.toggle('mode-city', mode === 'city');
@@ -1970,6 +1971,8 @@ mapEl.addEventListener('pointerdown', e => {
   if (e.button === 2 || (e.button === 1)) { rpan = local(e); e.preventDefault(); mapEl.setPointerCapture(e.pointerId); return; }
   if (e.button !== 0 || !isMapTarget(e) || !canDraw()) return;
   if (mode === 'history') { toast('В режиме History редактирование недоступно.', 'warn'); return; }
+  map._stop(); // halt fly/pan animation in place, without Leaflet's zoom re-snap
+  map.dragging.disable();
   drawing = { tool, pts: [local(e)], id: e.pointerId };
   try { mapEl.setPointerCapture(e.pointerId); } catch (err) { /* */ }
   e.preventDefault();
@@ -1992,8 +1995,8 @@ function endPointer(e) {
   finishDrawing(d);
   redrawPreview();
 }
-mapEl.addEventListener('pointerup', endPointer);
-mapEl.addEventListener('pointercancel', endPointer);
+addEventListener('pointerup', endPointer);
+addEventListener('pointercancel', endPointer);
 mapEl.addEventListener('pointerleave', () => { hover = null; redrawPreview(); });
 mapEl.addEventListener('contextmenu', e => e.preventDefault());
 function toLngLat(p) { const ll = map.containerPointToLatLng(p); return [ll.lng, ll.lat]; }
@@ -2147,6 +2150,16 @@ function flyToBox(bb) {
   });
 }
 
+function settleCamera() {
+  return new Promise(res => {
+    let last = '', same = 0, n = 0;
+    (function tick() {
+      const c = map.getCenter(), k = c.lat.toFixed(6) + ',' + c.lng.toFixed(6) + ',' + map.getZoom();
+      same = k === last ? same + 1 : 0; last = k;
+      if (same >= 3 || ++n > 90) res(); else requestAnimationFrame(tick);
+    })();
+  });
+}
 /* NATO-style unit symbol with company size indicator */
 function drawUnit(ctx, x, y, col, type, sc, alpha, state) {
   const w = 24 * sc, h = 16 * sc;
@@ -2231,6 +2244,7 @@ async function playBattle(act) {
   document.body.classList.add('battle');
   await flyToBox(bb);
   lockMap(true);
+  await settleCamera();
   let res;
   try {
     const merged = safe(() => norm(pc.union(...pieces)), null);
@@ -2239,11 +2253,13 @@ async function playBattle(act) {
     console.warn(e);
     res = { win: true, sc: 'broad', lossA: 0, lossD: 0 };
   }
-  lockMap(false);
-  bctx.clearRect(0, 0, innerWidth, innerHeight);
+  battleOn = null;
+  bctx.setTransform(1, 0, 0, 1, 0, 0);
+  bctx.clearRect(0, 0, bcv.width, bcv.height);
+  sizeBattle();
   document.body.classList.remove('battle');
   $('#battleBanner').classList.remove('show');
-  battleOn = null;
+  lockMap(false);
   res.prev = prev; res.place = place;
   return res;
 }
@@ -2449,6 +2465,7 @@ function runBattle(o) {
       const f = Math.min(1, (L_ - u.len[j - 1]) / seg);
       return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
     };
+    const ref0 = map.containerPointToLatLng([0, 0]), ref1 = map.containerPointToLatLng([256, 256]);
     let t = 0, last = performance.now(), ended = false, endAt = 0;
     const alive = u => u.dieAt === null || t < u.dieAt;
     const frontPoint = m => {
@@ -2485,17 +2502,13 @@ function runBattle(o) {
       const m = pf(tn);
       if (tn >= 1) finish();
       const ctx = bctx;
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
-      // dim surroundings slightly
-      ctx.save();
-      ctx.fillStyle = 'rgba(10,12,16,.16)';
-      ctx.beginPath(); ctx.rect(0, 0, innerWidth, innerHeight);
-      for (const p of polys) for (const r of p) { ctx.moveTo(r[0][0], r[0][1]); for (let k = 1; k < r.length; k++) ctx.lineTo(r[k][0], r[k][1]); ctx.closePath(); }
-      ctx.fill('evenodd');
-      ctx.restore();
-      // captured part
-      ctx.save();
-      areaPath(ctx); ctx.clip('evenodd');
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const q0 = map.latLngToContainerPoint(ref0), q1 = map.latLngToContainerPoint(ref1);
+      const zs = (q1.x - q0.x) / 256 || 1;
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, bcv.width, bcv.height);
+      ocx.setTransform(1, 0, 0, 1, 0, 0); ocx.clearRect(0, 0, ocv.width, ocv.height);
+      ctx.setTransform(dpr * zs, 0, 0, dpr * zs, dpr * q0.x, dpr * q0.y);
+      ocx.setTransform(dpr * zs, 0, 0, dpr * zs, dpr * q0.x, dpr * q0.y);
       const list = shapes(win && tn >= 1 ? 1 : m);
       const covPath = c_ => {
         c_.beginPath();
@@ -2505,7 +2518,7 @@ function runBattle(o) {
         }
       };
       const ring = list.find(s_ => s_.t === 'ring');
-      const ringPath = c_ => { c_.beginPath(); c_.rect(-BIG, -BIG, BIG * 2 + innerWidth, BIG * 2 + innerHeight); c_.moveTo(ring.c[0] + ring.r, ring.c[1]); c_.arc(ring.c[0], ring.c[1], Math.max(0.1, ring.r), 0, Math.PI * 2, true); };
+      const ringPath = c_ => { c_.beginPath(); c_.rect(-BIG, -BIG, BIG * 2, BIG * 2); c_.moveTo(ring.c[0] + ring.r, ring.c[1]); c_.arc(ring.c[0], ring.c[1], Math.max(0.1, ring.r), 0, Math.PI * 2, true); };
       // fill of the captured part
       ctx.save();
       areaPath(ctx); ctx.clip('evenodd');
@@ -2515,7 +2528,6 @@ function runBattle(o) {
       ctx.restore();
       // glowing front edge = outer boundary of the union of shapes
       ocx.save();
-      ocx.clearRect(0, 0, innerWidth, innerHeight);
       areaPath(ocx); ocx.clip('evenodd');
       ocx.lineWidth = 7; ocx.strokeStyle = hexA(SIDES[att].glow, 0.95); ocx.shadowColor = aCol; ocx.shadowBlur = 12;
       covPath(ocx); ocx.stroke();
@@ -2525,7 +2537,7 @@ function runBattle(o) {
       covPath(ocx); ocx.fill('nonzero');
       if (ring) { ringPath(ocx); ocx.fill('evenodd'); }
       ocx.restore();
-      ctx.drawImage(ocv, 0, 0, innerWidth, innerHeight);
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(ocv, 0, 0); ctx.restore();
       // target outline
       ctx.save();
       areaPath(ctx);
