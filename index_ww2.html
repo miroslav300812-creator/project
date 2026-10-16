@@ -945,7 +945,11 @@ body.battle .mappanel,body.battle .sheet,body.battle .bottomnav,body.battle .pla
 .battlecard.on svg{color:var(--accent)}
 .busy{position:fixed;inset:0;display:grid;place-items:center;z-index:2000;background:var(--sea);transition:opacity .4s}
 .busy.done{opacity:0;pointer-events:none}
+.busy{grid-auto-flow:row;align-content:center;justify-items:center;gap:14px;padding:24px;text-align:center}
 .busy div{font-weight:600;color:var(--muted);display:flex;gap:12px;align-items:center}
+.busyhint{max-width:440px;margin:0;font-size:13px;line-height:1.45;color:var(--muted2);opacity:0;animation:hintin .5s ease 7s forwards}
+.busyerr{display:none;max-width:480px;margin:0;font-size:13px;line-height:1.45;color:#ff8a80}
+@keyframes hintin{to{opacity:1}}
 .spin{width:22px;height:22px;border:3px solid var(--line2);border-top-color:var(--accent);border-radius:50%;animation:sp 0.8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media(min-width:900px){
@@ -959,7 +963,14 @@ body.battle .mappanel,body.battle .sheet,body.battle .bottomnav,body.battle .pla
 </style>
 </head>
 <body>
-<div class="busy" id="busy"><div><span class="spin"></span>Загрузка карты…</div></div>
+<div class="busy" id="busy"><div><span class="spin"></span>Загрузка карты…</div><p class="busyhint">Если загрузка не заканчивается — откройте файл в браузере Safari или Chrome (в «Файлах» нажмите «Поделиться» → «Открыть в Safari»). Встроенный просмотр файлов не запускает скрипты.</p><p class="busyerr" id="busyErr"></p></div>
+<script>
+window.addEventListener('error', function (e) {
+  if (window.__btfReady) return;
+  var el = document.getElementById('busyErr');
+  if (el) { el.textContent = 'Ошибка запуска: ' + (e.message || e.error || 'неизвестная ошибка') + '. Обновите страницу или откройте файл в другом браузере.'; el.style.display = 'block'; }
+});
+</script>
 <div id="map"></div>
 <canvas id="drawCanvas"></canvas>
 
@@ -1619,6 +1630,16 @@ function afterChange() {
   scheduleAutosave();
 }
 
+/* ------------------------------------------------------------------ canvas budget */
+// iOS Safari refuses canvases above ~16.7 Mpx and caps total canvas memory, so big retina
+// screens (iPad) get a lower backing-store density instead of a blank, never-loading map.
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+const fitDpr = (w, h, budget) => Math.max(0.5, Math.min(DPR, Math.sqrt(budget / Math.max(1, w * h))));
+if (L.Browser.retina && innerWidth * innerHeight * 1.5 * 1.5 * 4 > 5e6) L.Browser.retina = false;
+if (!Element.prototype.replaceChildren) {
+  Element.prototype.replaceChildren = function () { while (this.firstChild) this.removeChild(this.firstChild); for (const n of arguments) this.append(n); };
+}
+
 /* ------------------------------------------------------------------ map */
 const map = L.map('map', {
   zoomControl: false, minZoom: 2, maxZoom: 12, zoomSnap: 0.25, zoomDelta: 0.5, wheelPxPerZoomLevel: 100,
@@ -1630,8 +1651,8 @@ const pane = (n, z) => { const p = map.createPane(n); p.style.zIndex = z; return
 pane('vbase', 220); pane('terr', 400); pane('rivers', 410); pane('regions', 415); pane('outline', 420);
 pane('refl', 425); pane('flash', 430);
 const lblPane = pane('labels', 450); lblPane.classList.add('leaflet-labels-pane');
-const R = n => L.canvas({ pane: n, padding: 0.6, tolerance: 0 });
-const rVbase = R('vbase'), rTerr = R('terr'), rRiv = R('rivers'), rReg = R('regions'), rOut = R('outline'), rRef = R('refl'), rFlash = R('flash');
+const R = n => L.canvas({ pane: n, padding: 0.25, tolerance: 0 });
+const rVbase = R('vbase'), rTerr = R('terr'), rLines = R('outline');
 
 function homeView(animate) {
   const w = window.innerWidth;
@@ -1723,8 +1744,8 @@ function renderSide(s) {
   const border = mode === 'border';
   if (!fills[s]) {
     fills[s] = L.polygon([], { renderer: rTerr, pane: 'terr', stroke: false, fillColor: S.color, fillOpacity: .42, interactive: false, smoothFactor: .6 }).addTo(map);
-    glows[s] = L.polyline([], { renderer: rOut, pane: 'outline', color: S.glow, weight: 7, opacity: .22, interactive: false, smoothFactor: .6, lineJoin: 'round' }).addTo(map);
-    lines[s] = L.polyline([], { renderer: rOut, pane: 'outline', color: S.glow, weight: 1.8, opacity: .95, interactive: false, smoothFactor: .6, lineJoin: 'round' }).addTo(map);
+    glows[s] = L.polyline([], { renderer: rLines, pane: 'outline', color: S.glow, weight: 7, opacity: .22, interactive: false, smoothFactor: .6, lineJoin: 'round' }).addTo(map);
+    lines[s] = L.polyline([], { renderer: rLines, pane: 'outline', color: S.glow, weight: 1.8, opacity: .95, interactive: false, smoothFactor: .6, lineJoin: 'round' }).addTo(map);
   }
   fills[s].setStyle({ fillOpacity: border ? .1 : (s === 'X' ? .5 : .42) });
   lines[s].setStyle({ weight: border ? 3 : 1.8, color: border ? S.color : S.glow });
@@ -1737,7 +1758,7 @@ function flash(pieces, s) {
   const ll = [];
   for (const g of pieces) for (const p of g) ll.push(p.map(r => r.map(q => [q[1], q[0]])));
   const col = SIDES[s].color;
-  const f = L.polygon(ll, { renderer: rFlash, pane: 'flash', color: SIDES[s].glow, weight: 2, fillColor: s === 'N' ? '#ffffff' : col, fillOpacity: .75, opacity: 1, interactive: false }).addTo(map);
+  const f = L.polygon(ll, { renderer: rLines, pane: 'outline', color: SIDES[s].glow, weight: 2, fillColor: s === 'N' ? '#ffffff' : col, fillOpacity: .75, opacity: 1, interactive: false }).addTo(map);
   const t0 = performance.now(), dur = 900;
   (function step(t) {
     const k = Math.min(1, (t - t0) / dur);
@@ -1751,14 +1772,14 @@ function flash(pieces, s) {
 let riverLayer = null, regionLayer = null;
 function applyOverlays() {
   if (settings.rivers) {
-    if (!riverLayer) riverLayer = L.polyline(GEO.rivers.map(l => l.map(c => [c[1], c[0]])), { renderer: rRiv, pane: 'rivers', color: '#3f8ad6', weight: 1.4, opacity: .8, interactive: false });
+    if (!riverLayer) riverLayer = L.polyline(GEO.rivers.map(l => l.map(c => [c[1], c[0]])), { renderer: rLines, pane: 'outline', color: '#3f8ad6', weight: 1.4, opacity: .8, interactive: false });
     riverLayer.addTo(map);
   } else if (riverLayer) map.removeLayer(riverLayer);
   if (settings.regions) {
     if (!regionLayer) {
       const ls = [];
       for (const r of GEO.republics) for (const p of r.g) for (const ring of p) ls.push(ring.map(c => [c[1], c[0]]));
-      regionLayer = L.polyline(ls, { renderer: rReg, pane: 'regions', color: '#5b6472', weight: 1.1, opacity: .75, dashArray: '4 4', interactive: false });
+      regionLayer = L.polyline(ls, { renderer: rLines, pane: 'outline', color: '#5b6472', weight: 1.1, opacity: .75, dashArray: '4 4', interactive: false });
     }
     regionLayer.addTo(map);
   } else if (regionLayer) map.removeLayer(regionLayer);
@@ -1772,10 +1793,10 @@ function showRefLines(on) {
   if (on) {
     if (!refLayers) {
       refLayers = [
-        L.polyline(refLines2('U39'), { renderer: rRef, pane: 'refl', color: '#b3261e', weight: 2.6, dashArray: '8 5', interactive: false }),
-        L.polyline(refLines2('U41'), { renderer: rRef, pane: 'refl', color: '#7a1712', weight: 2.6, dashArray: '2 5', interactive: false }),
-        L.polyline(refLines2('G39'), { renderer: rRef, pane: 'refl', color: '#2457b8', weight: 2.6, dashArray: '8 5', interactive: false }),
-        L.polyline(GEO.front41.map(l => l.map(c => [c[1], c[0]])), { renderer: rRef, pane: 'refl', color: '#111', weight: 3.2, interactive: false })
+        L.polyline(refLines2('U39'), { renderer: rLines, pane: 'outline', color: '#b3261e', weight: 2.6, dashArray: '8 5', interactive: false }),
+        L.polyline(refLines2('U41'), { renderer: rLines, pane: 'outline', color: '#7a1712', weight: 2.6, dashArray: '2 5', interactive: false }),
+        L.polyline(refLines2('G39'), { renderer: rLines, pane: 'outline', color: '#2457b8', weight: 2.6, dashArray: '8 5', interactive: false }),
+        L.polyline(GEO.front41.map(l => l.map(c => [c[1], c[0]])), { renderer: rLines, pane: 'outline', color: '#111', weight: 3.2, interactive: false })
       ];
     }
     refLayers.forEach(l => l.addTo(map));
@@ -1821,10 +1842,10 @@ const LabelLayer = L.Layer.extend({
   _show() { this._c.style.visibility = ''; this._reset(); },
   redraw() { if (this._map) { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this._reset(); }); } },
   _reset() {
-    const m = this._map, size = m.getSize(), pad = .35;
+    const m = this._map, size = m.getSize(), pad = .25;
     const ox = size.x * pad, oy = size.y * pad;
     const W = Math.round(size.x + 2 * ox), H = Math.round(size.y + 2 * oy);
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = fitDpr(W, H, 4e6);
     const c = this._c;
     L.DomUtil.setPosition(c, m.containerPointToLayerPoint([-ox, -oy]));
     if (c.width !== W * dpr || c.height !== H * dpr) { c.width = W * dpr; c.height = H * dpr; c.style.width = W + 'px'; c.style.height = H + 'px'; }
@@ -1964,7 +1985,7 @@ const labels = new LabelLayer().addTo(map);
 const dc = $('#drawCanvas');
 const dctx = dc.getContext('2d');
 function sizeDraw() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = fitDpr(innerWidth, innerHeight, 3e6);
   dc.width = innerWidth * dpr; dc.height = innerHeight * dpr;
   dc.style.width = innerWidth + 'px'; dc.style.height = innerHeight + 'px';
   dctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -2146,16 +2167,17 @@ let battleStats = { n: 0, win: 0, lost: 0 };
 let battleOn = null;
 const bcv = $('#battleCanvas'), bctx = bcv.getContext('2d');
 const ocv = document.createElement('canvas'), ocx = ocv.getContext('2d');
-function sizeBattle() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  bcv.width = innerWidth * dpr; bcv.height = innerHeight * dpr;
+function sizeBattle(off) {
+  // battle canvases only hold real pixels while a battle is running
+  const dpr = off ? 1 : fitDpr(innerWidth, innerHeight, 3e6);
+  bcv.width = off ? 1 : Math.round(innerWidth * dpr); bcv.height = off ? 1 : Math.round(innerHeight * dpr);
   bcv.style.width = innerWidth + 'px'; bcv.style.height = innerHeight + 'px';
   bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ocv.width = bcv.width; ocv.height = bcv.height;
   ocx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-sizeBattle();
-addEventListener('resize', sizeBattle);
+sizeBattle(true);
+addEventListener('resize', () => { if (battleOn) sizeBattle(); });
 const rnd = (a, b) => a + Math.random() * (b - a);
 const clamp01 = v => (v < 0 ? 0 : v > 1 ? 1 : v);
 const smooth = v => { v = clamp01(v); return v * v * (3 - 2 * v); };
@@ -2295,6 +2317,7 @@ async function playBattle(act) {
   const place = city || nearestCity(sx / found, sy / found);
   const prev = { c: map.getCenter(), z: map.getZoom() };
   battleOn = { skip: false };
+  sizeBattle();
   document.body.classList.add('battle');
   await flyToBox(bb);
   lockMap(true);
@@ -2310,7 +2333,7 @@ async function playBattle(act) {
   battleOn = null;
   bctx.setTransform(1, 0, 0, 1, 0, 0);
   bctx.clearRect(0, 0, bcv.width, bcv.height);
-  sizeBattle();
+  sizeBattle(true);
   document.body.classList.remove('battle');
   $('#battleBanner').classList.remove('show');
   lockMap(false);
@@ -2589,7 +2612,7 @@ function runBattle(o) {
       const m = pf(tn);
       if (tn >= 1) finish();
       const ctx = bctx;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = bcv.width / innerWidth;
       const q0 = map.latLngToContainerPoint(ref0), q1 = map.latLngToContainerPoint(ref1);
       const zs = (q1.x - q0.x) / 256 || 1;
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, bcv.width, bcv.height);
@@ -3189,6 +3212,7 @@ setSide('U');
 setTool('hand', true);
 setMode('front', true);
 setTab('map');
+window.__btfReady = true;
 requestAnimationFrame(() => { $('#busy').classList.add('done'); setTimeout(() => $('#busy').remove(), 500); });
 if (restored) toast('Карта восстановлена из автосохранения.', 'ok');
 else { toast(SCEN.peak.loaded + ' (' + fmtPct(occupiedShare()) + ' территории СССР занято).', 'ok'); logEvent('sys', 'Загружена карта «' + SCEN.peak.title + '»', 0); }
